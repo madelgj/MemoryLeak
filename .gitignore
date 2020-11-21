@@ -1,0 +1,7 @@
+# ignore all .user files
+*.user
+
+# ignore all .pro files as we only need the cmake
+*.pro
+
+# ignore all built files as they can cause future problems in different linux versions
