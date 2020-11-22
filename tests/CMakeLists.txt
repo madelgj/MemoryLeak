@@ -1,0 +1,24 @@
+add_executable(test_memoryleak_member test_memoryleak_member.cpp)
+target_link_libraries(test_memoryleak_member gtest_main MemoryLeakLib)
+add_test(NAME test_memoryleak_member COMMAND test_memoryleak_member)
+
+# Comenta este bloque para ignorar este test
+#add_executable(test_memoryleak_application_basic test_memoryleak_application_basic.cpp)
+#target_link_libraries(test_memoryleak_application_basic gtest_main MemoryLeakLib)
+#add_test(NAME test_memoryleak_application_basic COMMAND test_memoryleak_application_basic)
+
+# Comenta este bloque para ignorar este test
+#add_executable(test_memoryleak_interactions test_memoryleak_interactions.cpp)
+#target_link_libraries(test_memoryleak_interactions gtest_main MemoryLeakLib)
+#add_test(NAME test_memoryleak_interactions COMMAND test_memoryleak_interactions)
+
+# Comenta este bloque para ignorar este test
+#add_executable(test_memoryleak_interactions_integration test_memoryleak_interactions_integration.cpp)
+#target_link_libraries(test_memoryleak_interactions_integration gtest_main MemoryLeakLib)
+#add_test(NAME test_memoryleak_interactions_integration COMMAND test_memoryleak_interactions_integration)
+
+# Comenta este bloque para ignorar este test
+#add_executable(test_memoryleak_load_save_to_file test_memoryleak_load_save_to_file.cpp)
+#target_link_libraries(test_memoryleak_load_save_to_file gtest_main MemoryLeakLib)
+#add_test(NAME test_memoryleak_load_save_to_file COMMAND test_memoryleak_load_save_to_file)
+#configure_file(${CMAKE_CURRENT_SOURCE_DIR}/test_data.dat ${CMAKE_CURRENT_BINARY_DIR}/test_data.dat COPYONLY)
