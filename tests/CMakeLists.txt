@@ -3,9 +3,9 @@ target_link_libraries(test_memoryleak_member gtest_main MemoryLeakLib)
 add_test(NAME test_memoryleak_member COMMAND test_memoryleak_member)
 
 # Comenta este bloque para ignorar este test
-#add_executable(test_memoryleak_application_basic test_memoryleak_application_basic.cpp)
-#target_link_libraries(test_memoryleak_application_basic gtest_main MemoryLeakLib)
-#add_test(NAME test_memoryleak_application_basic COMMAND test_memoryleak_application_basic)
+add_executable(test_memoryleak_application_basic test_memoryleak_application_basic.cpp)
+target_link_libraries(test_memoryleak_application_basic gtest_main MemoryLeakLib)
+add_test(NAME test_memoryleak_application_basic COMMAND test_memoryleak_application_basic)
 
 # Comenta este bloque para ignorar este test
 #add_executable(test_memoryleak_interactions test_memoryleak_interactions.cpp)

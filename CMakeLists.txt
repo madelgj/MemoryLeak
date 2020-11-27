@@ -40,9 +40,9 @@ if (CMAKE_VERSION VERSION_LESS 2.8.11)
 endif()
 
 
-add_library(MemoryLeakLib Member.hpp Member.cpp MemberProfileInfo.hpp MemberProfileInfo.cpp MemberLoginInfo.hpp MemberLoginInfo.cpp)
-    #Application.hpp Application.cpp
-    #Question.hpp Question.cpp Interaction.hpp Interaction.cpp Answer.hpp Answer.cpp Comment.hpp Comment.cpp)
+add_library(MemoryLeakLib Member.hpp Member.cpp MemberProfileInfo.hpp MemberProfileInfo.cpp MemberLoginInfo.hpp MemberLoginInfo.cpp
+    Application.hpp Application.cpp Question.hpp Question.cpp Interaction.hpp Interaction.cpp)
+    #Answer.hpp Answer.cpp Comment.hpp Comment.cpp)
 
 add_subdirectory(tests)
 

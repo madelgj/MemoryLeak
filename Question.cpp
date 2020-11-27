@@ -1,6 +1,7 @@
 #include "Question.hpp"
+#include "Question.hpp"
 
-Question::Question(int id,unsigned long int time,string author,string title,string description,vector <string> tags)
+Question::Question(int id,unsigned long int time,MemberProfileInfo* author,string title,string description,vector <string> tags)
 {
     _id=id;
     _time=time;
@@ -34,13 +35,49 @@ void Question::addInteraction(Interaction* interaction)
     _interactions.push_back(interaction);
 }
 
-Interaction* Question::removeInteraction(int id)
+Interaction* Question::removeInteraction(const int &id)
 {
-
+  Interaction* removed;
+  //auto it = find_if(_interactions.begin(),_interactions.end(),[&id](const Interaction& obj) {return obj.getId() == id;})
+    for (unsigned long i=0;i<_interactions.size();i++){
+        if(_interactions[i]->getId() == id){
+            removed = _interactions[i];
+            _interactions.erase(_interactions.begin() + i);
+            return removed;
+        }
+    }
+    return nullptr;
 }
 
 string Question::show()
 {
+    stringstream ss;
+    ss << _id << " - " << _title << endl;
+    ss << "-------" << endl;
+    ss << "by " << _author << " on " << _time << endl;
+    ss << " Tags: " << _tags[0];
+    for (unsigned long i=1; i<_tags.size();i++){
+        ss << " / " << _tags[i];
+    }
+    ss << endl;
+    if (_closed == true){ // a lo mejor solo deberia aparecer true y false y no esto
+        ss << "closed - ";
+    } else{
+        ss << "open - ";
+    }
+    ss << _votes << " votes" << endl;
+    ss << "-------" << endl;
+    ss << _description << endl;
+    ss << "-------" << endl;
+    if (_interactions[0] != nullptr){
+        ss << _interactions[0]->show() << endl;
+        for (unsigned long i=1; i<_interactions.size();i++){
+            ss << "-" << endl;
+            ss << _interactions[i]->show() << endl;
+        }
+        ss << "-------" << endl;
+    }
+    return ss.str();
 
 }
 

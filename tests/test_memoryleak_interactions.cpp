@@ -3,8 +3,8 @@
 #include "../Member.hpp"
 #include "../Question.hpp"
 #include "../Interaction.hpp"
-#include "../Answer.hpp"
-#include "../Comment.hpp"
+//#include "../Answer.hpp"
+//#include "../Comment.hpp"
 
 
 // The fixture for testing class Foo.

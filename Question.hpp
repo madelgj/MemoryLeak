@@ -4,19 +4,23 @@
 #include <vector>
 #include "Member.hpp"
 #include "Interaction.hpp"
+#include <sstream>
 
 using namespace std;
 
 class Question
 {
 public:
-    Question(int id,unsigned long int time,string author,string title,string description,vector <string> tags);
+    Question(int id,unsigned long int time,MemberProfileInfo* author,string title,string description,vector <string> tags);
     ~Question();
     void incrementVotes();
     void decrementVotes();
     void addInteraction(Interaction* interaction);
-    Interaction* removeInteraction(int id);
+
+    Interaction* removeInteraction(const int &id);
+
     string show();
+
     int getId();
     void setId(int id);
     string getTitle();
@@ -27,7 +31,7 @@ public:
     void setTags(vector <string> tags);
     unsigned long int getTime();
     void setTime(unsigned long int time);
-    MemberProfileInfo* getAuthor;
+    MemberProfileInfo* getAuthor();
     void setAuthor(MemberProfileInfo* author);
     bool getClosed();
     void setClosed(bool closed);
@@ -39,7 +43,7 @@ private:
     vector <string> _tags;
     unsigned long int _time;
     vector <Interaction*> _interactions;
-    MemberProfileInfo* _author;
+    MemberProfileInfo *_author;
     int _votes;
     bool _closed;
 };
