@@ -36,6 +36,10 @@ public:
     bool getClosed();
     void setClosed(bool closed);
 
+    int getVotes() const;
+
+    vector<Interaction *> getInteractions() const; // hacer funcion que devuelva la interaction correspondente con el id
+
 private:
     int _id;
     string _title;

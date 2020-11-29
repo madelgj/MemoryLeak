@@ -150,3 +150,13 @@ void Question::setClosed(bool closed)
 {
     _closed=closed;
 }
+
+int Question::getVotes() const
+{
+    return _votes;
+}
+
+vector<Interaction *> Question::getInteractions() const
+{
+    return _interactions;
+}
