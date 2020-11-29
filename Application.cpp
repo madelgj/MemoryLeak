@@ -143,3 +143,102 @@ bool Application::editBio(string const bio)
     _members[_currentMember]->setBio(bio);
     return true;
 }
+
+bool Application::createQuestion(const string &title, const string &description, vector<string> tags)
+{
+    if (!isLogged()){
+        return false;
+    }
+    int id = _questions.size() + 1;
+    unsigned long time = 10; //how to set time? I think we can set a random value
+    _questions.push_back(new Question(id,time,(MemberProfileInfo*)getCurrentMember(),title,description,tags));
+    return true;
+}
+
+bool Application::answerQuestion(const int &idQuestion, const string &AnswerText)
+{
+    // we check if the id provided corresponds to any question
+    if (!questionExists(idQuestion)){
+        return false;
+    } else {
+        unsigned long time = 10;
+        Question.addInteraction(new Answer(Question.getNextId(),AnswerText,(MemberProfileInfo*)getCurrentMember(),time));
+        return true;
+    }
+}
+
+bool Application::comment(const int &idQA, const string &CommentText)
+{
+
+}
+
+bool Application::closeQuestion(const int &idQuestion)
+{
+
+}
+
+bool Application::acceptAnswer(const int &idAnswer)
+{
+
+}
+
+vector<Question *> Application::getQuestions()
+{
+
+}
+
+vector<Question *> Application::getQuestionsByTag(const string &tag)
+{
+
+}
+
+bool Application::upvoteAnswer(const int &idQA)
+{
+
+}
+
+bool Application::downvoteAnswer(const int &idQA)
+{
+
+}
+
+bool Application::upvoteQuestion(const int &idQA)
+{
+
+}
+
+bool Application::downvoteQuestion(const int &idQA)
+{
+
+}
+
+void Application::deleteQuestion(const int &idQuestion)
+{
+
+}
+
+void Application::deleteInteraction(const int &idInteraction)
+{
+
+}
+
+void Application::modifyQuestion(const int &idQuestion, const string &newDescription)
+{
+
+}
+
+void Application::modifyInteraction(const int &idInteraction, const string &newText)
+{
+
+}
+
+bool Application::questionExists(const int &idQuestion)
+{
+    for (unsigned long i=0;i<_questions.size();i++){
+        if(idQuestion == _questions[i]->getId()){
+            return true;
+        }
+    }
+
+    return false;
+}

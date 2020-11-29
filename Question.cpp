@@ -11,6 +11,7 @@ Question::Question(int id,unsigned long int time,MemberProfileInfo* author,strin
     _tags=tags;
     _votes=0;
     _closed=false;
+    _nextId = 1; // check if this should start at one?
 }
 
 Question::~Question()
@@ -33,6 +34,7 @@ void Question::decrementVotes()
 void Question::addInteraction(Interaction* interaction)
 {
     _interactions.push_back(interaction);
+    _nextId ++;
 }
 
 Interaction* Question::removeInteraction(const int &id)
@@ -154,6 +156,11 @@ void Question::setClosed(bool closed)
 int Question::getVotes() const
 {
     return _votes;
+}
+
+int Question::getNextId()
+{
+    return _nextId;
 }
 
 vector<Interaction *> Question::getInteractions() const

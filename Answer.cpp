@@ -35,7 +35,7 @@ Comment *Answer::removeComment(const int &id)
       return nullptr;
 }
 
-Comment *Answer::getComments() const
+vector<Comment *>Answer::getComments() const
 {
     return _comments;
 }

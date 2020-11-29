@@ -2,9 +2,9 @@
 #define ANSWER_HPP
 #include <iostream>
 #include "Interaction.hpp"
-#include "Comment.hpp"
 #include <sstream>
 #include <vector>
+#include "Comment.hpp"
 
 using namespace std;
 
@@ -18,7 +18,7 @@ public:
 
     void addComment(Comment* NewCom);
     Comment* removeComment(const int &id);
-    Comment *getComments() const;
+    vector<Comment *> getComments() const;
 
     bool getRight_answer() const;
     void setRight_answer(bool value);
