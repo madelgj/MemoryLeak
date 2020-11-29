@@ -1,7 +1,6 @@
 #ifndef COMMENT_HPP
 #define COMMENT_HPP
 #include "Interaction.hpp"
-#include "Answer.hpp"
 #include "Application.hpp"
 #include <iostream>
 #include <vector>
