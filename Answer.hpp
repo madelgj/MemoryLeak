@@ -11,7 +11,7 @@ using namespace std;
 class Answer : public Interaction
 {
 public:
-    Answer(const int &id, const int &date, MemberProfileInfo* author, const string &text);
+    Answer(const int &id, const string &text, MemberProfileInfo* author,unsigned long time);
 
     void incrementVotes();
     void decrementVotes();
@@ -23,7 +23,9 @@ public:
     bool getRight_answer() const;
     void setRight_answer(bool value);
 
-    void show();
+    string show();
+
+    int getVotes() const;
 
 private:
     vector<Comment*> _comments;

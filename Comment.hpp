@@ -3,12 +3,17 @@
 #include "Interaction.hpp"
 #include "Answer.hpp"
 #include "Application.hpp"
+#include <iostream>
+#include <vector>
+#include <sstream>
 
+using namespace std;
 
 class Comment : public Interaction
 {
 public:
-    Comment();
+    Comment(const int &id, const string &text, MemberProfileInfo *author, unsigned long time);
+    string show();
 };
 
 #endif // COMMENT_HPP

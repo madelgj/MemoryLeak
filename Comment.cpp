@@ -1,12 +1,7 @@
 #include "Comment.hpp"
 
-Comment::Comment(const int &id, const string &text, MemberProfileInfo* author, const unsigned long &time)
-{
-    _id = id;
-    _text = text;
-    _time = time;
-    _author = author;
-}
+Comment::Comment(const int &id, const string &text, MemberProfileInfo* author,unsigned long time) : Interaction(id,text,author,time)
+{}
 
 string Comment::show()
 {

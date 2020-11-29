@@ -1,33 +1,38 @@
 #include "Answer.hpp"
 
-Answer::Answer(const int &id, const int &date, MemberProfileInfo* author, const string &text)
+Answer::Answer(const int &id, const string &text, MemberProfileInfo* author,unsigned long time): Interaction(id,text,author,time)
 {
-    _id = id;
-    _time = date;
-    _author = author;
-    _text = text;
     _votes = 0;
     right_answer = false;
 }
 
 void Answer::incrementVotes()
 {
+    _votes++;
 
 }
 
 void Answer::decrementVotes()
 {
-
+    _votes--;
 }
 
 void Answer::addComment(Comment *NewCom)
 {
-
+     _comments.push_back(NewCom);
 }
 
 Comment *Answer::removeComment(const int &id)
 {
-
+    Comment* removed;
+      for (unsigned long i=0;i<_comments.size();i++){
+          if(_comments[i]->getId() == id){
+              removed = _comments[i];
+              _comments.erase(_comments.begin() + i);
+              return removed;
+          }
+      }
+      return nullptr;
 }
 
 Comment *Answer::getComments() const
@@ -45,7 +50,7 @@ void Answer::setRight_answer(bool value)
     right_answer = value;
 }
 
-void Answer::show()
+string Answer::show()
 {
     stringstream ss;
     ss << '\t' << "Answer:" << endl;
@@ -68,4 +73,9 @@ void Answer::show()
 
     return ss.str();
 
+}
+
+int Answer::getVotes() const
+{
+    return _votes;
 }
