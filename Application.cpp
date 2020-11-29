@@ -4,6 +4,7 @@ using namespace std;
 Application::Application()
 {
     _currentMember = -1;
+    _id = 0;
 }
 
 Application::~Application()
@@ -149,20 +150,26 @@ bool Application::createQuestion(const string &title, const string &description,
     if (!isLogged()){
         return false;
     }
-    int id = _questions.size() + 1;
+    _id++;
+
     unsigned long time = 10; //how to set time? I think we can set a random value
-    _questions.push_back(new Question(id,time,(MemberProfileInfo*)getCurrentMember(),title,description,tags));
+    _questions.push_back(new Question(_id,time,(MemberProfileInfo*)getCurrentMember(),title,description,tags));
     return true;
 }
 
-bool Application::answerQuestion(const int &idQuestion, const string &AnswerText)
+bool Application::answerQuestion(const int &idQuestion, const string &answerText)
 {
+    if (!isLogged()){
+        return false;
+    }
+    int questionIndex = questionExists(idQuestion);
     // we check if the id provided corresponds to any question
-    if (!questionExists(idQuestion)){
+    if (questionIndex == 0){
         return false;
     } else {
         unsigned long time = 10;
-        Question.addInteraction(new Answer(Question.getNextId(),AnswerText,(MemberProfileInfo*)getCurrentMember(),time));
+        _id++;
+        _questions[questionIndex]->addInteraction(new Answer(_id,answerText,(MemberProfileInfo*)getCurrentMember(),time));
         return true;
     }
 }
@@ -232,13 +239,13 @@ void Application::modifyInteraction(const int &idInteraction, const string &newT
 
 }
 
-bool Application::questionExists(const int &idQuestion)
+int Application::questionExists(const int &idQuestion)
 {
     for (unsigned long i=0;i<_questions.size();i++){
         if(idQuestion == _questions[i]->getId()){
-            return true;
+            return i;
         }
     }
 
-    return false;
+    return 0;
 }

@@ -28,14 +28,14 @@ public:
     bool editBio(string const bio);
 
     bool createQuestion(const string &title, const string &description, vector<string> tags);
-    bool answerQuestion(const int &idQuestion, const string &AnswerText);
+    bool answerQuestion(const int &idQuestion, const string &answerText);
     bool comment(const int &idQA, const string &CommentText);
 
     bool closeQuestion(const int &idQuestion);
     bool acceptAnswer(const int &idAnswer);
 
-    vector<Question*> getQuestions(); //not needed to be logged
-    vector<Question*> getQuestionsByTag(const string &tag);
+    vector<Question *> getQuestions(); //not needed to be logged
+    vector<Question *> getQuestionsByTag(const string &tag);
 
     bool upvoteAnswer(const int &idQA);
     bool downvoteAnswer(const int &idQA);
@@ -48,8 +48,11 @@ public:
     void modifyQuestion(const int &idQuestion,const string &newDescription);
     void modifyInteraction(const int &idInteraction, const string &newText);
 
+    int questionExists(const int &idQuestion);
+
 private:
     vector<Member*> _members;
+    int _id;
     int _currentMember;    //default no member is logged
     vector<Question*> _questions;
 };
