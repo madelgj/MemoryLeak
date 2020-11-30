@@ -32,7 +32,9 @@ void Question::decrementVotes()
 
 void Question::addInteraction(Interaction* interaction)
 {
-    _interactions.push_back(interaction);
+    if (!_closed){
+        _interactions.push_back(interaction);
+    }
 }
 
 Interaction* Question::removeInteraction(const int &id)
@@ -86,7 +88,7 @@ int Question::getId()
     return _id;
 }
 
-void Question::setId(int id)
+void Question::setId(const int &id)
 {
     _id=id;
 }
@@ -156,7 +158,27 @@ int Question::getVotes() const
     return _votes;
 }
 
+Interaction *Question::exists(const int &id)
+{
+    for (unsigned long i=0; i<_interactions.size(); i++){
+        if (_interactions[i]->getId() == id){
+            return _interactions[i];
+        }
+    }
+    return nullptr;
+}
+
 vector<Interaction *> Question::getInteractions() const
 {
     return _interactions;
+}
+
+bool Question::questionHasTag(const string &tag)
+{
+    for (unsigned long i=0; i<_tags.size(); i++){
+        if(_tags[i] == tag){
+            return true;
+        }
+    }
+    return false;
 }

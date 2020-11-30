@@ -29,7 +29,7 @@ public:
 
     bool createQuestion(const string &title, const string &description, vector<string> tags);
     bool answerQuestion(const int &idQuestion, const string &answerText);
-    bool comment(const int &idQA, const string &CommentText);
+    bool comment(const int &idQA, const string &commentText);
 
     bool closeQuestion(const int &idQuestion);
     bool acceptAnswer(const int &idAnswer);
@@ -37,10 +37,10 @@ public:
     vector<Question *> getQuestions(); //not needed to be logged
     vector<Question *> getQuestionsByTag(const string &tag);
 
-    bool upvoteAnswer(const int &idQA);
-    bool downvoteAnswer(const int &idQA);
-    bool upvoteQuestion(const int &idQA);
-    bool downvoteQuestion(const int &idQA);
+    bool upvoteAnswer(const int &idAnswer);
+    bool downvoteAnswer(const int &idAnswer);
+    bool upvoteQuestion(const int &idQuestion);
+    bool downvoteQuestion(const int &idQuestion);
 
     void deleteQuestion(const int &idQuestion);
     void deleteInteraction(const int &idInteraction);
@@ -49,6 +49,9 @@ public:
     void modifyInteraction(const int &idInteraction, const string &newText);
 
     int questionExists(const int &idQuestion);
+    Interaction* interactionExists(const int &idInteraction);
+
+    int interactionIndex(const int &idInteraction);
 
 private:
     vector<Member*> _members;
