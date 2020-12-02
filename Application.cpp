@@ -216,8 +216,6 @@ bool Application::closeQuestion(const int &idQuestion)
         // we check if it's the author
         if(_questions[questionIndex]->getAuthor()->getUsername()==_members[_currentMember]->getUsername()){
             _questions[questionIndex]->setClosed(true);
-            MemberProfileInfo* author = _questions[questionIndex]->getAuthor();
-            author->increaseReputation();
             return true;
         }
     }
@@ -398,6 +396,7 @@ Interaction *Application::interactionExists(const int &idInteraction){
     return answerToClose;
 
 }
+// we could avoid this method by passing the index above
 int Application::interactionIndex(const int &idInteraction){
     Interaction* answerToClose;
     for (unsigned long i=0;i<_questions.size();i++){     // the id corresponds to an interaction
