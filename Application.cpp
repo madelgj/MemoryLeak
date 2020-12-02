@@ -194,8 +194,10 @@ bool Application::comment(const int &idQA, const string &commentText)
 
     Interaction* answerToComment = interactionExists(idQA);
     //the id corresponds to an answer
-    if(answerToComment != nullptr && answerToComment->is()=="Answer"){
-        Answer* targetAnswer = (Answer*)answerToComment;
+    //if(answerToComment != nullptr && answerToComment->is()=="Answer"){
+    if( dynamic_cast<Answer*>(interactionExists(idQA))!= nullptr){
+       // Answer* targetAnswer = (Answer*)answerToComment;
+        Answer* targetAnswer = dynamic_cast<Answer*>(answerToComment);
         _id++;
         targetAnswer->addComment(new Comment(_id,time,(MemberProfileInfo*)getCurrentMember(),commentText));
         return true;
@@ -342,10 +344,14 @@ bool Application::deleteInteraction(const int &idInteraction)
     }
     int interactionToDelete = interactionIndex(idInteraction);
     if(interactionToDelete != -1){
-        _questions[interactionToDelete]->removeInteraction(idInteraction);
-        //why remove interaction returns a pointer?
+        // we check if it's the question's author
+        if(_questions[interactionToDelete]->getAuthor()->getUsername()==_members[_currentMember]->getUsername()){
+            _questions[interactionToDelete]->removeInteraction(idInteraction);
+            return true;
+        }
+
     }
-    return true;
+    return false;
 }
 
 bool Application::modifyQuestion(const int &idQuestion, const string &newDescription)
