@@ -42,11 +42,11 @@ public:
     bool upvoteQuestion(const int &idQuestion);
     bool downvoteQuestion(const int &idQuestion);
 
-    void deleteQuestion(const int &idQuestion);
-    void deleteInteraction(const int &idInteraction);
+    bool deleteQuestion(const int &idQuestion);
+    bool deleteInteraction(const int &idInteraction);
 
-    void modifyQuestion(const int &idQuestion,const string &newDescription);
-    void modifyInteraction(const int &idInteraction, const string &newText);
+    bool modifyQuestion(const int &idQuestion,const string &newDescription);
+    bool modifyInteraction(const int &idInteraction, const string &newText);
 
     int questionExists(const int &idQuestion);
     Interaction* interactionExists(const int &idInteraction);

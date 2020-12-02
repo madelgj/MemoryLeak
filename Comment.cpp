@@ -12,3 +12,7 @@ string Comment::show()
 
     return ss.str();
 }
+
+string Comment::is(){
+    return "Comment";
+}

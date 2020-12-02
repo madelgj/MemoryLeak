@@ -23,6 +23,7 @@ public:
     void setRightAnswer(bool value);
 
     string show();
+    string is();
 
     int getVotes() const;
 

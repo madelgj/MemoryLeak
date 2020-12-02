@@ -10,10 +10,6 @@ Interaction::Interaction(const int &id, const string &text, MemberProfileInfo* a
 Interaction::~Interaction()
 {}
 
-
-string Interaction::show()
-{}
-
 unsigned long Interaction::getTime() const
 {
     return _time;

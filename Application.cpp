@@ -208,6 +208,8 @@ bool Application::closeQuestion(const int &idQuestion)
         return false;
     } else{
         _questions[questionIndex]->setClosed(true);
+        MemberProfileInfo* author = _questions[questionIndex]->getAuthor();
+        author->increaseReputation();
         return true;
     }
 
@@ -221,8 +223,10 @@ bool Application::acceptAnswer(const int &idAnswer)
     // we check if the id corresponds to any interaction
         // the id corresponds to an interaction --> how to know if its comment or answer?
     Interaction* answerToClose = interactionExists(idAnswer);
-    if(answerToClose!= nullptr){
+    if(answerToClose!= nullptr && answerToClose->is()=="Answer"){
+       Answer* targetAnswer = (Answer*) answerToClose;
        answerToClose->getAuthor()->increaseReputation();
+       targetAnswer->setRightAnswer(true);
        return true;
     }
     return false;
@@ -252,6 +256,7 @@ bool Application::upvoteAnswer(const int &idAnswer)
     Answer* answerToVote = (Answer*)interactionExists(idAnswer);
     if(answerToVote != nullptr){
         answerToVote->incrementVotes();
+        answerToVote->getAuthor()->increaseReputation();
         return true;
     } else{
         return false;
@@ -268,6 +273,7 @@ bool Application::downvoteAnswer(const int &idAnswer)
     if(answerToVote != nullptr){
         //polimorfism?
         answerToVote->decrementVotes();
+        answerToVote->getAuthor()->decreaseReputation();
         return true;
     } else{
         return false;
@@ -283,12 +289,10 @@ bool Application::upvoteQuestion(const int &idQuestion)
     int questionIndex = questionExists(idQuestion);
     if (questionIndex == -1){
         return false;
-    } else {
-        _questions[questionIndex]->incrementVotes();
-        return true;
     }
 
-
+    _questions[questionIndex]->incrementVotes();
+    return true;
 }
 
 bool Application::downvoteQuestion(const int &idQuestion)
@@ -306,37 +310,41 @@ bool Application::downvoteQuestion(const int &idQuestion)
 
 }
 
-void Application::deleteQuestion(const int &idQuestion)
+bool Application::deleteQuestion(const int &idQuestion)
 {
     int questionIndex = questionExists(idQuestion);
     if (questionIndex != -1){
         _questions.erase(_questions.begin() + questionIndex);
     }
+    return true;
 }
 
-void Application::deleteInteraction(const int &idInteraction)
+bool Application::deleteInteraction(const int &idInteraction)
 {
     int interactionToDelete = interactionIndex(idInteraction);
     if(interactionToDelete != -1){
         _questions[interactionToDelete]->removeInteraction(idInteraction);
         //why remove interaction returns a pointer?
     }
+    return true;
 }
 
-void Application::modifyQuestion(const int &idQuestion, const string &newDescription)
+bool Application::modifyQuestion(const int &idQuestion, const string &newDescription)
 {
     int questionIndex = questionExists(idQuestion);
     if (questionIndex != -1){
         _questions[questionIndex]->setDescription(newDescription);
     }
+    return true;
 }
 
-void Application::modifyInteraction(const int &idInteraction, const string &newText)
+bool Application::modifyInteraction(const int &idInteraction, const string &newText)
 {
     Interaction* interactionToChange = interactionExists(idInteraction);
     if(interactionToChange != nullptr){
         interactionToChange -> setText(newText);
     }
+    return true;
 }
 
 int Application::questionExists(const int &idQuestion)

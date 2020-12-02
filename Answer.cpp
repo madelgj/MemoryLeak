@@ -53,18 +53,28 @@ string Answer::show()
 {
     stringstream ss;
     ss << '\t' << "Answer:" << endl;
-    ss << '\t' << _id << " - " << _time << " - " << _author->getUsername() << ":" << endl;
-    ss << "accepted" << " - " << _votes << " votes" << endl;
+    ss << '\t' << _id << " - " << _time << " - " << _author->getUsername() << ":";
+    if(right_answer){
+        ss << "\naccepted";
+    }
+    else{
+        ss << endl;
+    }
+    ss <<" - " << _votes << " votes" << endl;
     ss << '\t' << _text << endl;
-    ss << '\t' << "--";
+    ss << "\t--";
     for (unsigned long i=0; i<_comments.size();i++){
-        if(i!=0){ ss << "-" << endl; }
-            ss << _comments[i]->show() << endl;
+            ss << "\n\t" << _comments[i]->show() << "\n\t-";
         }
     return ss.str();
+
 }
 
 int Answer::getVotes() const
 {
     return _votes;
+}
+
+string Answer::is(){
+    return "Answer";
 }

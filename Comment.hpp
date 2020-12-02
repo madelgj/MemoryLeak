@@ -12,6 +12,7 @@ class Comment : public Interaction
 public:
     Comment(const int &id, unsigned long time, MemberProfileInfo* author, const string &text);
     string show();
+    string is();
 };
 
 #endif // COMMENT_HPP

@@ -39,7 +39,7 @@ void MemberProfileInfo::decreaseReputation()
 
 void MemberProfileInfo::increaseReputation()
 {
-    _reputation += 1;
+    _reputation ++;
 }
 
 MemberProfileInfo::MemberProfileInfo()

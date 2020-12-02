@@ -55,27 +55,27 @@ string Question::show()
 {
     stringstream ss;
     ss << _id << " - " << _title << endl;
-    ss << "-------" << endl;
-    ss << "by " << _author << " on " << _time << endl;
-//    ss << " Tags: " << _tags[0];
+    ss << " -------" << endl;
+    ss << "by " << _author->getUsername() << " on " << _time << endl;
+    ss << "Tags: ";
     for (unsigned long i=0; i<_tags.size();i++){
-        ss << " / " << _tags[i];
+        if (i!=0){ ss << "/"; }
+        ss << _tags[i];
     }
     ss << endl;
-    if (_closed == true){ // a lo mejor solo deberia aparecer true y false y no esto
+    if (_closed == true){
         ss << "closed - ";
     } else{
         ss << "open - ";
     }
     ss << _votes << " votes" << endl;
-    ss << "-------" << endl;
+    ss << "---" << endl;
     ss << _description << endl;
-//    ss << _interactions[0]->show() << endl;
     for (unsigned long i=0; i<_interactions.size();i++){
-        ss << "-" << endl;
+        ss << "---" << endl;
         ss << _interactions[i]->show() << endl;
     }
-    ss << "-------" << endl;
+    ss << "---";
     return ss.str();
 
 }

@@ -24,6 +24,7 @@ public:
     void setAuthor(MemberProfileInfo *author);
 
     virtual string show()=0;
+    virtual string is()=0;
 
 
 protected:
