@@ -2,7 +2,7 @@
 #include <string>
 
 #include "../Member.hpp"
-//#include "../Application.hpp"
+#include "../Application.hpp"
 
 // The fixture for testing class Foo.
 class TestMemoryLeakApplicationBasic : public ::testing::Test {
@@ -69,57 +69,57 @@ class TestMemoryLeakApplicationBasic : public ::testing::Test {
 };
 
 
-//TEST_F(TestMemoryLeakApplicationBasic, ApplicationCanCreateAndShowAllMembers)
-//{
-//    Application manager;
-//    ASSERT_TRUE(manager.createMember(name1, bio1, email1, password1));
-//    std::vector<MemberProfileInfo*> members = manager.showMembers();
-//    ASSERT_EQ(1, members.size());
-//    EXPECT_EQ(name1, members[0]->getUsername());
-//    EXPECT_EQ(bio1, members[0]->getBio());
-//    //EXPECT_EQ(0, members[0]->getFollowers());
-//    //EXPECT_EQ(0, members[0]->getFollowing().size());
+TEST_F(TestMemoryLeakApplicationBasic, ApplicationCanCreateAndShowAllMembers)
+{
+    Application manager;
+    ASSERT_TRUE(manager.createMember(name1, bio1, email1, password1));
+    std::vector<MemberProfileInfo*> members = manager.showMembers();
+    ASSERT_EQ(1, members.size());
+    EXPECT_EQ(name1, members[0]->getUsername());
+    EXPECT_EQ(bio1, members[0]->getBio());
+    //EXPECT_EQ(0, members[0]->getFollowers());
+    //EXPECT_EQ(0, members[0]->getFollowing().size());
 
-//    ASSERT_TRUE(manager.createMember(name2, bio2, email2, password2));
-//    members = manager.showMembers();
-//    ASSERT_EQ(2, members.size());
-//    EXPECT_EQ(name2, members[1]->getUsername());
-//    EXPECT_EQ(bio2, members[1]->getBio());
-//    //EXPECT_EQ(0, members[1]->getFollowers());
-//    //EXPECT_EQ(0, members[1]->getFollowing().size());
-//}
+    ASSERT_TRUE(manager.createMember(name2, bio2, email2, password2));
+    members = manager.showMembers();
+    ASSERT_EQ(2, members.size());
+    EXPECT_EQ(name2, members[1]->getUsername());
+    EXPECT_EQ(bio2, members[1]->getBio());
+    //EXPECT_EQ(0, members[1]->getFollowers());
+    //EXPECT_EQ(0, members[1]->getFollowing().size());
+}
 
-//TEST_F(TestMemoryLeakApplicationBasic, ApplicationCanShowSingleMember)
-//{
-//    Application manager;
-//    ASSERT_TRUE(manager.createMember(name1, bio1, email1, password1));
-//    ASSERT_TRUE(manager.createMember(name2, bio2, email2, password2));
-//    ASSERT_TRUE(manager.createMember(name3, bio3, email3, password3));
+TEST_F(TestMemoryLeakApplicationBasic, ApplicationCanShowSingleMember)
+{
+    Application manager;
+    ASSERT_TRUE(manager.createMember(name1, bio1, email1, password1));
+    ASSERT_TRUE(manager.createMember(name2, bio2, email2, password2));
+    ASSERT_TRUE(manager.createMember(name3, bio3, email3, password3));
 
-//    MemberProfileInfo* member = manager.showMember(name2);
+    MemberProfileInfo* member = manager.showMember(name2);
 
-//    ASSERT_NE(nullptr, member);
-//    EXPECT_EQ(name2, member->getUsername());
-//    EXPECT_EQ(bio2, member->getBio());
-//    //EXPECT_EQ(0, member->getFollowers());
-//    //EXPECT_EQ(0, member->getFollowing().size());
+    ASSERT_NE(nullptr, member);
+    EXPECT_EQ(name2, member->getUsername());
+    EXPECT_EQ(bio2, member->getBio());
+    //EXPECT_EQ(0, member->getFollowers());
+    //EXPECT_EQ(0, member->getFollowing().size());
 
-//    member = manager.showMember(name3);
+    member = manager.showMember(name3);
 
-//    ASSERT_NE(nullptr, member);
-//    EXPECT_EQ(name3, member->getUsername());
-//    EXPECT_EQ(bio3, member->getBio());
-//    //EXPECT_EQ(0, member->getFollowers());
-//    //EXPECT_EQ(0, member->getFollowing().size());
+    ASSERT_NE(nullptr, member);
+    EXPECT_EQ(name3, member->getUsername());
+    EXPECT_EQ(bio3, member->getBio());
+    //EXPECT_EQ(0, member->getFollowers());
+    //EXPECT_EQ(0, member->getFollowing().size());
 
-//    member = manager.showMember(name1);
+    member = manager.showMember(name1);
 
-//    ASSERT_NE(nullptr, member);
-//    EXPECT_EQ(name1, member->getUsername());
-//    EXPECT_EQ(bio1, member->getBio());
-//    //EXPECT_EQ(0, member->getFollowers());
-//    //EXPECT_EQ(0, member->getFollowing().size());
-//}
+    ASSERT_NE(nullptr, member);
+    EXPECT_EQ(name1, member->getUsername());
+    EXPECT_EQ(bio1, member->getBio());
+    //EXPECT_EQ(0, member->getFollowers());
+    //EXPECT_EQ(0, member->getFollowing().size());
+}
 
 TEST_F(TestMemoryLeakApplicationBasic, ApplicationCannotDuplicateMember)
 {
