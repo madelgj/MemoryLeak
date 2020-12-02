@@ -167,11 +167,14 @@ bool Application::answerQuestion(const int &idQuestion, const string &answerText
     if (questionIndex == -1){
         return false;
     } else {
-        unsigned long time = 10;
-        _id++;
-        _questions[questionIndex]->addInteraction(new Answer(_id,time,(MemberProfileInfo*)getCurrentMember(),answerText));
-        return true;
+        if(!_questions[questionIndex]->getClosed()){
+            unsigned long time = 10;
+            _id++;
+            _questions[questionIndex]->addInteraction(new Answer(_id,time,(MemberProfileInfo*)getCurrentMember(),answerText));
+            return true;
+        }
     }
+    return false;
 }
 
 bool Application::comment(const int &idQA, const string &commentText)
@@ -187,11 +190,14 @@ bool Application::comment(const int &idQA, const string &commentText)
         _questions[questionIndex]->addInteraction(new Comment(_id,time,(MemberProfileInfo*)getCurrentMember(),commentText));
         return true;
     }
-    Answer* answerToComment = (Answer*)interactionExists(idQA);
+    // check if corresponds to an answer
+
+    Interaction* answerToComment = interactionExists(idQA);
     //the id corresponds to an answer
-    if(answerToComment != nullptr){
+    if(answerToComment != nullptr && answerToComment->is()=="Answer"){
+        Answer* targetAnswer = (Answer*)answerToComment;
         _id++;
-        answerToComment->addComment(new Comment(_id,time,(MemberProfileInfo*)getCurrentMember(),commentText));
+        targetAnswer->addComment(new Comment(_id,time,(MemberProfileInfo*)getCurrentMember(),commentText));
         return true;
     }
     return false;
@@ -207,12 +213,15 @@ bool Application::closeQuestion(const int &idQuestion)
     if (questionIndex == -1){
         return false;
     } else{
-        _questions[questionIndex]->setClosed(true);
-        MemberProfileInfo* author = _questions[questionIndex]->getAuthor();
-        author->increaseReputation();
-        return true;
+        // we check if it's the author
+        if(_questions[questionIndex]->getAuthor()->getUsername()==_members[_currentMember]->getUsername()){
+            _questions[questionIndex]->setClosed(true);
+            MemberProfileInfo* author = _questions[questionIndex]->getAuthor();
+            author->increaseReputation();
+            return true;
+        }
     }
-
+    return false;
 }
 
 bool Application::acceptAnswer(const int &idAnswer)
@@ -221,13 +230,16 @@ bool Application::acceptAnswer(const int &idAnswer)
         return false;
     }
     // we check if the id corresponds to any interaction
-        // the id corresponds to an interaction --> how to know if its comment or answer?
     Interaction* answerToClose = interactionExists(idAnswer);
     if(answerToClose!= nullptr && answerToClose->is()=="Answer"){
-       Answer* targetAnswer = (Answer*) answerToClose;
-       answerToClose->getAuthor()->increaseReputation();
-       targetAnswer->setRightAnswer(true);
-       return true;
+        int index = interactionIndex(idAnswer);
+       // check if is the question's author
+        if (_questions[index]->getAuthor()->getUsername()==_members[_currentMember]->getUsername()){
+            Answer* targetAnswer = (Answer*) answerToClose;
+            answerToClose->getAuthor()->increaseReputation();
+            targetAnswer->setRightAnswer(true);
+            return true;
+        }
     }
     return false;
 }
@@ -271,7 +283,6 @@ bool Application::downvoteAnswer(const int &idAnswer)
     }
     Answer* answerToVote = (Answer*)interactionExists(idAnswer);
     if(answerToVote != nullptr){
-        //polimorfism?
         answerToVote->decrementVotes();
         answerToVote->getAuthor()->decreaseReputation();
         return true;
@@ -312,15 +323,25 @@ bool Application::downvoteQuestion(const int &idQuestion)
 
 bool Application::deleteQuestion(const int &idQuestion)
 {
+    if (!isLogged()){
+        return false;
+    }
     int questionIndex = questionExists(idQuestion);
     if (questionIndex != -1){
-        _questions.erase(_questions.begin() + questionIndex);
+        // we check if it's the question's author
+        if(_questions[questionIndex]->getAuthor()->getUsername()==_members[_currentMember]->getUsername()){
+            _questions.erase(_questions.begin() + questionIndex);
+            return true;
+        }
     }
-    return true;
+    return false;
 }
 
 bool Application::deleteInteraction(const int &idInteraction)
 {
+    if (!isLogged()){
+        return false;
+    }
     int interactionToDelete = interactionIndex(idInteraction);
     if(interactionToDelete != -1){
         _questions[interactionToDelete]->removeInteraction(idInteraction);
@@ -330,16 +351,27 @@ bool Application::deleteInteraction(const int &idInteraction)
 }
 
 bool Application::modifyQuestion(const int &idQuestion, const string &newDescription)
-{
+{ //only author can modify
+    if (!isLogged()){
+        return false;
+    }
+
     int questionIndex = questionExists(idQuestion);
     if (questionIndex != -1){
-        _questions[questionIndex]->setDescription(newDescription);
+        // we see if the person trying to modify it is the author
+        if(_questions[questionIndex]->getAuthor()->getUsername() == _members[_currentMember]->getUsername() ){
+            _questions[questionIndex]->setDescription(newDescription);
+            return true;
+        }
     }
-    return true;
+    return false;
 }
 
 bool Application::modifyInteraction(const int &idInteraction, const string &newText)
 {
+    if (!isLogged()){
+        return false;
+    }
     Interaction* interactionToChange = interactionExists(idInteraction);
     if(interactionToChange != nullptr){
         interactionToChange -> setText(newText);
@@ -359,8 +391,8 @@ int Application::questionExists(const int &idQuestion)
 }
 
 Interaction *Application::interactionExists(const int &idInteraction){
-    Interaction* answerToClose;
-    for (unsigned long i=0;i<_questions.size();i++){     // the id corresponds to an interaction --> how to know if its comment or answer?
+    Interaction* answerToClose = nullptr;
+    for (unsigned long i=0;i<_questions.size();i++){     // the id corresponds to an interaction
         answerToClose = _questions[i]->exists(idInteraction);
     }
     return answerToClose;
@@ -368,7 +400,7 @@ Interaction *Application::interactionExists(const int &idInteraction){
 }
 int Application::interactionIndex(const int &idInteraction){
     Interaction* answerToClose;
-    for (unsigned long i=0;i<_questions.size();i++){     // the id corresponds to an interaction --> how to know if its comment or answer?
+    for (unsigned long i=0;i<_questions.size();i++){     // the id corresponds to an interaction
         answerToClose = _questions[i]->exists(idInteraction);
         if (answerToClose != nullptr){
             return i;

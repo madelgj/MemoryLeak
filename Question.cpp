@@ -22,11 +22,13 @@ Question::~Question()
 
 void Question::incrementVotes()
 {
+    _author->increaseReputation();
     _votes++;
 }
 
 void Question::decrementVotes()
 {
+    _author->decreaseReputation();
     _votes--;
 }
 

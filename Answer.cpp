@@ -8,11 +8,13 @@ Answer::Answer(const int &id,unsigned long time,MemberProfileInfo* author,const 
 
 void Answer::incrementVotes()
 {
+    _author->increaseReputation();
     _votes++;
 }
 
 void Answer::decrementVotes()
 {
+    _author->decreaseReputation();
     _votes--;
 }
 
