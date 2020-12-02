@@ -270,18 +270,21 @@ bool Application::upvoteAnswer(const int &idAnswer)
     if(_members[_currentMember]->hasUpvoted(idAnswer)){
         return false;
     }
-    if(_members[_currentMember]->hasDownvoted(idAnswer)){
-        _members[_currentMember]->removeDownvoted(idAnswer);
-    }
-    Answer* answerToVote = (Answer*)interactionExists(idAnswer);
-    if(answerToVote != nullptr){
-        answerToVote->incrementVotes();
-        answerToVote->getAuthor()->increaseReputation();
-        return true;
-    } else{
-        return false;
-    }
 
+    Interaction* answerToVote = interactionExists(idAnswer);
+    if (answerToVote != nullptr && answerToVote->is()=="Answer"){
+        Answer* targetAnswer = (Answer*) answerToVote;
+        if(_members[_currentMember]->hasDownvoted(idAnswer)){
+            _members[_currentMember]->removeDownvoted(idAnswer);
+            targetAnswer->incrementVotes();
+        }
+        targetAnswer->incrementVotes();
+        targetAnswer->getAuthor()->increaseReputation();
+        _members[_currentMember]->setUpvoted(idAnswer);
+
+        return true;
+    }
+    return false;
 }
 
 bool Application::downvoteAnswer(const int &idAnswer)
@@ -295,14 +298,19 @@ bool Application::downvoteAnswer(const int &idAnswer)
     if(_members[_currentMember]->hasUpvoted(idAnswer)){
         _members[_currentMember]->removeUpvoted(idAnswer);
     }
-    Answer* answerToVote = (Answer*)interactionExists(idAnswer);
-    if(answerToVote != nullptr){
-        answerToVote->decrementVotes();
-        answerToVote->getAuthor()->decreaseReputation();
+    Interaction* answerToVote = interactionExists(idAnswer);
+    if (answerToVote != nullptr && answerToVote->is()=="Answer"){
+        Answer* targetAnswer = (Answer*) answerToVote;
+        if(_members[_currentMember]->hasUpvoted(idAnswer)){
+            _members[_currentMember]->removeUpvoted(idAnswer);
+            targetAnswer->decrementVotes();
+        }
+        targetAnswer->decrementVotes();
+        targetAnswer->getAuthor()->decreaseReputation();
+        _members[_currentMember]->setDownvoted(idAnswer);
         return true;
-    } else{
-        return false;
     }
+    return false;
 
 }
 
@@ -329,7 +337,7 @@ bool Application::upvoteQuestion(const int &idQuestion)
 
     _members[_currentMember]->setUpvoted(idQuestion);
     _questions[questionIndex]->incrementVotes();
-   // _questions[questionIndex]->getAuthor()->increaseReputation();
+    _questions[questionIndex]->getAuthor()->increaseReputation();
     return true;
 }
 
@@ -355,7 +363,7 @@ bool Application::downvoteQuestion(const int &idQuestion)
 
     _questions[questionIndex]->decrementVotes();
     _members[_currentMember]->setDownvoted(idQuestion);
- //   _questions[questionIndex]->getAuthor()->decreaseReputation();
+    _questions[questionIndex]->getAuthor()->decreaseReputation();
     return true;
 }
 
