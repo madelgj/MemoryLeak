@@ -201,8 +201,9 @@ bool Application::comment(const int &idQA, const string &commentText)
         _id++;
         targetAnswer->addComment(new Comment(_id,time,(MemberProfileInfo*)getCurrentMember(),commentText));
         return true;
+    } else {
+        return false;
     }
-    return false;
 
 }
 
@@ -366,9 +367,12 @@ bool Application::modifyQuestion(const int &idQuestion, const string &newDescrip
         if(_questions[questionIndex]->getAuthor()->getUsername() == _members[_currentMember]->getUsername() ){
             _questions[questionIndex]->setDescription(newDescription);
             return true;
+        } else {
+            return false;
         }
+    } else{
+        return false;
     }
-    return false;
 }
 
 bool Application::modifyInteraction(const int &idInteraction, const string &newText)
@@ -377,10 +381,14 @@ bool Application::modifyInteraction(const int &idInteraction, const string &newT
         return false;
     }
     Interaction* interactionToChange = interactionExists(idInteraction);
-    if(interactionToChange != nullptr){
-        interactionToChange -> setText(newText);
+    if(interactionToChange->getAuthor()->getUsername()==_members[_currentMember]->getUsername()){
+        if(interactionToChange != nullptr){
+            interactionToChange -> setText(newText);
+            return true;
+        }
     }
-    return true;
+    return false;
+
 }
 
 int Application::questionExists(const int &idQuestion)
