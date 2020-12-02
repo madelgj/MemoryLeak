@@ -1,5 +1,4 @@
 #include "Question.hpp"
-#include "Question.hpp"
 
 Question::Question(int id,unsigned long int time,MemberProfileInfo* author,string title,string description,vector <string> tags)
 {

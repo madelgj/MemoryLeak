@@ -194,10 +194,10 @@ bool Application::comment(const int &idQA, const string &commentText)
 
     Interaction* answerToComment = interactionExists(idQA);
     //the id corresponds to an answer
-    //if(answerToComment != nullptr && answerToComment->is()=="Answer"){
-    if( dynamic_cast<Answer*>(interactionExists(idQA))!= nullptr){
-       // Answer* targetAnswer = (Answer*)answerToComment;
-        Answer* targetAnswer = dynamic_cast<Answer*>(answerToComment);
+    if(answerToComment != nullptr && answerToComment->is()=="Answer"){
+    //if( dynamic_cast<Answer*>(interactionExists(idQA))!= nullptr){
+        Answer* targetAnswer = (Answer*)answerToComment;
+       // Answer* targetAnswer = dynamic_cast<Answer*>(answerToComment);
         _id++;
         targetAnswer->addComment(new Comment(_id,time,(MemberProfileInfo*)getCurrentMember(),commentText));
         return true;
@@ -266,6 +266,13 @@ bool Application::upvoteAnswer(const int &idAnswer)
     if (!isLogged()){
         return false;
     }
+    // we check if the user has already upvoted this question
+    if(_members[_currentMember]->hasUpvoted(idAnswer)){
+        return false;
+    }
+    if(_members[_currentMember]->hasDownvoted(idAnswer)){
+        _members[_currentMember]->removeDownvoted(idAnswer);
+    }
     Answer* answerToVote = (Answer*)interactionExists(idAnswer);
     if(answerToVote != nullptr){
         answerToVote->incrementVotes();
@@ -281,6 +288,12 @@ bool Application::downvoteAnswer(const int &idAnswer)
 {
     if (!isLogged()){
         return false;
+    }
+    if(_members[_currentMember]->hasDownvoted(idAnswer)){
+        return false;
+    }
+    if(_members[_currentMember]->hasUpvoted(idAnswer)){
+        _members[_currentMember]->removeUpvoted(idAnswer);
     }
     Answer* answerToVote = (Answer*)interactionExists(idAnswer);
     if(answerToVote != nullptr){
@@ -298,12 +311,25 @@ bool Application::upvoteQuestion(const int &idQuestion)
     if (!isLogged()){
         return false;
     }
+
     int questionIndex = questionExists(idQuestion);
     if (questionIndex == -1){
         return false;
     }
 
+    if(_members[_currentMember]->hasUpvoted(idQuestion)){
+        return false;
+    }
+
+    if(_members[_currentMember]->hasDownvoted(idQuestion)){
+        _members[_currentMember]->removeDownvoted(idQuestion);
+        _questions[questionIndex]->incrementVotes();
+
+    }
+
+    _members[_currentMember]->setUpvoted(idQuestion);
     _questions[questionIndex]->incrementVotes();
+   // _questions[questionIndex]->getAuthor()->increaseReputation();
     return true;
 }
 
@@ -312,14 +338,25 @@ bool Application::downvoteQuestion(const int &idQuestion)
     if (!isLogged()){
         return false;
     }
+
     int questionIndex = questionExists(idQuestion);
     if (questionIndex == -1){
         return false;
-    } else {
-        _questions[questionIndex]->decrementVotes();
-        return true;
     }
 
+    if(_members[_currentMember]->hasDownvoted(idQuestion)){
+        return false;
+    }
+
+    if(_members[_currentMember]->hasUpvoted(idQuestion)){
+        _members[_currentMember]->removeUpvoted(idQuestion);
+        _questions[questionIndex]->decrementVotes();
+    }
+
+    _questions[questionIndex]->decrementVotes();
+    _members[_currentMember]->setDownvoted(idQuestion);
+ //   _questions[questionIndex]->getAuthor()->decreaseReputation();
+    return true;
 }
 
 bool Application::deleteQuestion(const int &idQuestion)
