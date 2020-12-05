@@ -24,11 +24,12 @@ public:
     void setAuthor(MemberProfileInfo *author);
 
     virtual string show()=0;
-    virtual string is()=0;
+    string getTyp();
 
 
 protected:
     int _id;
+    string _type;
     unsigned long int _time;
     string _text;
     MemberProfileInfo* _author;

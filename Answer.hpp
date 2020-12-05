@@ -11,6 +11,7 @@ class Answer : public Interaction
 {
 public:
     Answer(const int &id,unsigned long time,MemberProfileInfo* author,const string &text);
+    ~Answer();
 
     void incrementVotes();
     void decrementVotes();
@@ -23,7 +24,7 @@ public:
     void setRightAnswer(bool value);
 
     string show();
-    string is();
+    bool is();
 
     int getVotes() const;
 

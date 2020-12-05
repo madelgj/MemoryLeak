@@ -10,7 +10,14 @@ Application::Application()
 Application::~Application()
 {
     _currentMember = -1;
+    for (unsigned long i=0; i<_members.size();i++){
+        delete _members.at(i);
+    }
     _members.clear();
+    for (unsigned long i=0; i<_questions.size();i++){
+        delete _questions.at(i);
+    }
+    _questions.clear();
 }
 
 bool Application::createMember(string username, string bio, string email, string password)
@@ -194,10 +201,12 @@ bool Application::comment(const int &idQA, const string &commentText)
 
     Interaction* answerToComment = interactionExists(idQA);
     //the id corresponds to an answer
-    if(answerToComment != nullptr && answerToComment->is()=="Answer"){
-    //if( dynamic_cast<Answer*>(interactionExists(idQA))!= nullptr){
+    cout << "voy a entrar" << endl;
+    cout << (answerToComment != nullptr) << endl;
+    cout << "answerToComment->getType(): " << (answerToComment->getTyp()) << endl;
+    if(answerToComment != nullptr && answerToComment->getTyp()=="Answer"){
+        cout << "he entrado" << endl;
         Answer* targetAnswer = (Answer*)answerToComment;
-       // Answer* targetAnswer = dynamic_cast<Answer*>(answerToComment);
         _id++;
         targetAnswer->addComment(new Comment(_id,time,(MemberProfileInfo*)getCurrentMember(),commentText));
         return true;
@@ -232,7 +241,7 @@ bool Application::acceptAnswer(const int &idAnswer)
     }
     // we check if the id corresponds to any interaction
     Interaction* answerToClose = interactionExists(idAnswer);
-    if(answerToClose!= nullptr && answerToClose->is()=="Answer"){
+    if(answerToClose!= nullptr && answerToClose->getTyp()=="Answer"){
         int index = interactionIndex(idAnswer);
        // check if is the question's author
         if (_questions[index]->getAuthor()->getUsername()==_members[_currentMember]->getUsername()){
@@ -272,7 +281,7 @@ bool Application::upvoteAnswer(const int &idAnswer)
     }
 
     Interaction* answerToVote = interactionExists(idAnswer);
-    if (answerToVote != nullptr && answerToVote->is()=="Answer"){
+    if (answerToVote != nullptr && answerToVote->getTyp()=="Answer"){
         Answer* targetAnswer = (Answer*) answerToVote;
         if(_members[_currentMember]->hasDownvoted(idAnswer)){
             _members[_currentMember]->removeDownvoted(idAnswer);
@@ -295,11 +304,10 @@ bool Application::downvoteAnswer(const int &idAnswer)
     if(_members[_currentMember]->hasDownvoted(idAnswer)){
         return false;
     }
-    if(_members[_currentMember]->hasUpvoted(idAnswer)){
-        _members[_currentMember]->removeUpvoted(idAnswer);
-    }
+
     Interaction* answerToVote = interactionExists(idAnswer);
-    if (answerToVote != nullptr && answerToVote->is()=="Answer"){
+    // we check if the answer exists
+    if (answerToVote != nullptr && answerToVote->getTyp()=="Answer"){
         Answer* targetAnswer = (Answer*) answerToVote;
         if(_members[_currentMember]->hasUpvoted(idAnswer)){
             _members[_currentMember]->removeUpvoted(idAnswer);
@@ -376,6 +384,7 @@ bool Application::deleteQuestion(const int &idQuestion)
     if (questionIndex != -1){
         // we check if it's the question's author
         if(_questions[questionIndex]->getAuthor()->getUsername()==_members[_currentMember]->getUsername()){
+            delete _questions[questionIndex];
             _questions.erase(_questions.begin() + questionIndex);
             return true;
         }

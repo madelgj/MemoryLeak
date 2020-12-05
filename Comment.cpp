@@ -1,7 +1,9 @@
 #include "Comment.hpp"
 
 Comment::Comment(const int &id, unsigned long time, MemberProfileInfo* author, const string &text) : Interaction(id,text,author,time)
-{}
+{
+    _type = "Comment";
+}
 
 string Comment::show()
 {
@@ -13,6 +15,6 @@ string Comment::show()
     return ss.str();
 }
 
-string Comment::is(){
-    return "Comment";
+bool Comment::is(){
+    return false;
 }

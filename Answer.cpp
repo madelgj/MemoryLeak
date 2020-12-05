@@ -4,6 +4,15 @@ Answer::Answer(const int &id,unsigned long time,MemberProfileInfo* author,const 
 {
     _votes = 0;
     right_answer = false;
+    _type = "Answer";
+}
+
+Answer::~Answer()
+{
+    for (unsigned int i=0;i<_comments.size();i++){
+        delete _comments.at(i);
+    }
+    _comments.clear();
 }
 
 void Answer::incrementVotes()
@@ -75,6 +84,6 @@ int Answer::getVotes() const
     return _votes;
 }
 
-string Answer::is(){
-    return "Answer";
+bool Answer::is(){
+    return true;
 }

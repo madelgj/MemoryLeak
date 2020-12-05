@@ -5,6 +5,7 @@ Interaction::Interaction(const int &id, const string &text, MemberProfileInfo* a
     _text = text;
     _author = author;
     _time = time;
+    _type = "Interaction";
 }
 
 Interaction::~Interaction()
@@ -38,6 +39,11 @@ MemberProfileInfo *Interaction::getAuthor() const
 void Interaction::setAuthor(MemberProfileInfo *author)
 {
     _author = author;
+}
+
+string Interaction::getTyp()
+{
+    return _type;
 }
 
 int Interaction::getId() const
