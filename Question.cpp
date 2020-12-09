@@ -14,9 +14,6 @@ Question::Question(int id,unsigned long int time,MemberProfileInfo* author,strin
 
 Question::~Question()
 {
-    for (unsigned int i=0;i<_interactions.size();i++){
-        delete _interactions.at(i);
-    }
     _interactions.clear();
     _tags.clear();
     _author=NULL;
@@ -45,7 +42,7 @@ Interaction* Question::removeInteraction(const int &id)
     for (unsigned long i=0;i<_interactions.size();i++){
         if(_interactions[i]->getId() == id){
             removed = _interactions[i];
-            delete _interactions.at(i);
+           // delete _interactions[i];
             _interactions.erase(_interactions.begin() + i);
             return removed;
         }

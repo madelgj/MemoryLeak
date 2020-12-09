@@ -10,13 +10,7 @@ Application::Application()
 Application::~Application()
 {
     _currentMember = -1;
-    for (unsigned long i=0; i<_members.size();i++){
-        delete _members.at(i);
-    }
     _members.clear();
-    for (unsigned long i=0; i<_questions.size();i++){
-        delete _questions.at(i);
-    }
     _questions.clear();
 }
 
@@ -79,7 +73,9 @@ bool Application::eraseCurrentMember()
     if(_currentMember==-1){
         return false;
     }
+    delete _members.at(_currentMember);
     _members.erase(_members.begin()+_currentMember);
+
     _currentMember=-1;
     return true;
 }
@@ -384,7 +380,7 @@ bool Application::deleteQuestion(const int &idQuestion)
     if (questionIndex != -1){
         // we check if it's the question's author
         if(_questions[questionIndex]->getAuthor()->getUsername()==_members[_currentMember]->getUsername()){
-            delete _questions[questionIndex];
+             delete _questions[questionIndex];
             _questions.erase(_questions.begin() + questionIndex);
             return true;
         }
@@ -472,7 +468,6 @@ int Application::interactionIndex(const int &idInteraction){
         if (answerToClose != nullptr){
             return i;
         }
-
     }
     return -1;
 }
