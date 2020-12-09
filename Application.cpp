@@ -193,23 +193,17 @@ bool Application::comment(const int &idQA, const string &commentText)
         _questions[questionIndex]->addInteraction(new Comment(_id,time,(MemberProfileInfo*)getCurrentMember(),commentText));
         return true;
     }
-    // check if corresponds to an answer
 
     Interaction* answerToComment = interactionExists(idQA);
-    //the id corresponds to an answer
-    cout << "voy a entrar" << endl;
-    cout << (answerToComment != nullptr) << endl;
-    cout << "answerToComment->getType(): " << (answerToComment->getTyp()) << endl;
-    if(answerToComment != nullptr && answerToComment->getTyp()=="Answer"){
-        cout << "he entrado" << endl;
-        Answer* targetAnswer = (Answer*)answerToComment;
+    if(dynamic_cast <Answer*> (answerToComment) != nullptr){
+        Answer* targetAnswer = dynamic_cast<Answer*>(answerToComment);
         _id++;
         targetAnswer->addComment(new Comment(_id,time,(MemberProfileInfo*)getCurrentMember(),commentText));
         return true;
-    } else {
-        return false;
     }
 
+
+    return false;
 }
 
 bool Application::closeQuestion(const int &idQuestion)
@@ -239,7 +233,7 @@ bool Application::acceptAnswer(const int &idAnswer)
     Interaction* answerToClose = interactionExists(idAnswer);
     if(answerToClose!= nullptr && answerToClose->getTyp()=="Answer"){
         int index = interactionIndex(idAnswer);
-       // check if is the question's author
+        // check if is the question's author
         if (_questions[index]->getAuthor()->getUsername()==_members[_currentMember]->getUsername()){
             Answer* targetAnswer = (Answer*) answerToClose;
             answerToClose->getAuthor()->increaseReputation();
@@ -380,7 +374,7 @@ bool Application::deleteQuestion(const int &idQuestion)
     if (questionIndex != -1){
         // we check if it's the question's author
         if(_questions[questionIndex]->getAuthor()->getUsername()==_members[_currentMember]->getUsername()){
-             delete _questions[questionIndex];
+            delete _questions[questionIndex];
             _questions.erase(_questions.begin() + questionIndex);
             return true;
         }
@@ -452,7 +446,7 @@ int Application::questionExists(const int &idQuestion)
     return -1;
 }
 
-Interaction *Application::interactionExists(const int &idInteraction){
+Interaction* Application::interactionExists(const int &idInteraction){
     Interaction* answerToClose = nullptr;
     for (unsigned long i=0;i<_questions.size();i++){     // the id corresponds to an interaction
         answerToClose = _questions[i]->exists(idInteraction);
