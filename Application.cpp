@@ -195,11 +195,14 @@ bool Application::comment(const int &idQA, const string &commentText)
     }
 
     Interaction* answerToComment = interactionExists(idQA);
-    if(dynamic_cast <Answer*> (answerToComment) != nullptr){
+    if(answerToComment!=nullptr){
+
+        if(dynamic_cast <Answer*> (answerToComment) != nullptr){
         Answer* targetAnswer = dynamic_cast<Answer*>(answerToComment);
         _id++;
         targetAnswer->addComment(new Comment(_id,time,(MemberProfileInfo*)getCurrentMember(),commentText));
         return true;
+        }
     }
 
 
@@ -390,11 +393,14 @@ bool Application::deleteInteraction(const int &idInteraction)
     int interactionToDelete = interactionIndex(idInteraction);
     if(interactionToDelete != -1){
         // we check if it's the question's author
+        cout << "hola15" << endl << flush;
+        cout << "autor de la pregunta es: " << endl;
+        cout << _questions[interactionToDelete]->getAuthor()->getUsername() << endl << flush;
+        cout << "el miembro actualmente logeado es :" << _members[_currentMember]->getUsername() << endl << flush;
         if(_questions[interactionToDelete]->getAuthor()->getUsername()==_members[_currentMember]->getUsername()){
             _questions[interactionToDelete]->removeInteraction(idInteraction);
             return true;
         }
-
     }
     return false;
 }
@@ -447,13 +453,16 @@ int Application::questionExists(const int &idQuestion)
 }
 
 Interaction* Application::interactionExists(const int &idInteraction){
-    Interaction* answerToClose = nullptr;
+    Interaction* answerToClose;
     for (unsigned long i=0;i<_questions.size();i++){     // the id corresponds to an interaction
         answerToClose = _questions[i]->exists(idInteraction);
+        if (answerToClose != nullptr){
+            return answerToClose;
+        }
     }
     return answerToClose;
-
 }
+
 // we could avoid this method by passing the index above
 int Application::interactionIndex(const int &idInteraction){
     Interaction* answerToClose;

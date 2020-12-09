@@ -131,6 +131,9 @@ void Question::setTime(unsigned long int time)
 
 MemberProfileInfo* Question::getAuthor()
 {
+    if (_author != nullptr) {
+        cout << "hola2" << endl << flush;
+    }
     return _author;
 }
 
@@ -157,6 +160,8 @@ int Question::getVotes() const
 Interaction *Question::exists(const int &id)
 {
     for (unsigned long i=0; i<_interactions.size(); i++){
+        cout << "the id we are checking is: " << id << endl << flush;
+        cout << "the actual id is: " << _interactions[i]->getId()<< endl << flush;
         if (_interactions[i]->getId() == id){
             return _interactions[i];
         }
