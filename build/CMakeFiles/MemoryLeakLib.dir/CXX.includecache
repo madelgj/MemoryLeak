@@ -1,0 +1,110 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/madel/Desktop/University/Industrial informatics/memoryleak/Answer.cpp
+Answer.hpp
+/home/madel/Desktop/University/Industrial informatics/memoryleak/Answer.hpp
+
+/home/madel/Desktop/University/Industrial informatics/memoryleak/Answer.hpp
+iostream
+-
+sstream
+-
+vector
+-
+Comment.hpp
+/home/madel/Desktop/University/Industrial informatics/memoryleak/Comment.hpp
+
+/home/madel/Desktop/University/Industrial informatics/memoryleak/Application.cpp
+Application.hpp
+/home/madel/Desktop/University/Industrial informatics/memoryleak/Application.hpp
+
+/home/madel/Desktop/University/Industrial informatics/memoryleak/Application.hpp
+iostream
+-
+vector
+-
+Member.hpp
+/home/madel/Desktop/University/Industrial informatics/memoryleak/Member.hpp
+Question.hpp
+/home/madel/Desktop/University/Industrial informatics/memoryleak/Question.hpp
+Comment.hpp
+/home/madel/Desktop/University/Industrial informatics/memoryleak/Comment.hpp
+Answer.hpp
+/home/madel/Desktop/University/Industrial informatics/memoryleak/Answer.hpp
+
+/home/madel/Desktop/University/Industrial informatics/memoryleak/Comment.cpp
+Comment.hpp
+/home/madel/Desktop/University/Industrial informatics/memoryleak/Comment.hpp
+
+/home/madel/Desktop/University/Industrial informatics/memoryleak/Comment.hpp
+Interaction.hpp
+/home/madel/Desktop/University/Industrial informatics/memoryleak/Interaction.hpp
+iostream
+-
+vector
+-
+sstream
+-
+
+/home/madel/Desktop/University/Industrial informatics/memoryleak/Interaction.cpp
+Interaction.hpp
+/home/madel/Desktop/University/Industrial informatics/memoryleak/Interaction.hpp
+
+/home/madel/Desktop/University/Industrial informatics/memoryleak/Interaction.hpp
+iostream
+-
+Member.hpp
+/home/madel/Desktop/University/Industrial informatics/memoryleak/Member.hpp
+
+/home/madel/Desktop/University/Industrial informatics/memoryleak/Member.cpp
+Member.hpp
+/home/madel/Desktop/University/Industrial informatics/memoryleak/Member.hpp
+
+/home/madel/Desktop/University/Industrial informatics/memoryleak/Member.hpp
+iostream
+-
+vector
+-
+MemberLoginInfo.hpp
+/home/madel/Desktop/University/Industrial informatics/memoryleak/MemberLoginInfo.hpp
+MemberProfileInfo.hpp
+/home/madel/Desktop/University/Industrial informatics/memoryleak/MemberProfileInfo.hpp
+
+/home/madel/Desktop/University/Industrial informatics/memoryleak/MemberLoginInfo.cpp
+MemberLoginInfo.hpp
+/home/madel/Desktop/University/Industrial informatics/memoryleak/MemberLoginInfo.hpp
+
+/home/madel/Desktop/University/Industrial informatics/memoryleak/MemberLoginInfo.hpp
+iostream
+-
+
+/home/madel/Desktop/University/Industrial informatics/memoryleak/MemberProfileInfo.cpp
+MemberProfileInfo.hpp
+/home/madel/Desktop/University/Industrial informatics/memoryleak/MemberProfileInfo.hpp
+
+/home/madel/Desktop/University/Industrial informatics/memoryleak/MemberProfileInfo.hpp
+iostream
+-
+
+/home/madel/Desktop/University/Industrial informatics/memoryleak/Question.cpp
+Question.hpp
+/home/madel/Desktop/University/Industrial informatics/memoryleak/Question.hpp
+
+/home/madel/Desktop/University/Industrial informatics/memoryleak/Question.hpp
+iostream
+-
+vector
+-
+Member.hpp
+/home/madel/Desktop/University/Industrial informatics/memoryleak/Member.hpp
+Interaction.hpp
+/home/madel/Desktop/University/Industrial informatics/memoryleak/Interaction.hpp
+sstream
+-
+

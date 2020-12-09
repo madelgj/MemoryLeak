@@ -1,0 +1,1 @@
+/usr/bin/c++   -std=c++11 -g  -rdynamic CMakeFiles/test_memoryleak_interactions_integration.dir/test_memoryleak_interactions_integration.cpp.o  -o test_memoryleak_interactions_integration ../lib/libgtest_maind.a ../libMemoryLeakLib.a ../lib/libgtestd.a -lpthread 

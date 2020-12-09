@@ -1,0 +1,2 @@
+/usr/bin/ar qc libMemoryLeakLib.a  CMakeFiles/MemoryLeakLib.dir/Member.cpp.o CMakeFiles/MemoryLeakLib.dir/MemberProfileInfo.cpp.o CMakeFiles/MemoryLeakLib.dir/MemberLoginInfo.cpp.o CMakeFiles/MemoryLeakLib.dir/Application.cpp.o CMakeFiles/MemoryLeakLib.dir/Question.cpp.o CMakeFiles/MemoryLeakLib.dir/Interaction.cpp.o CMakeFiles/MemoryLeakLib.dir/Answer.cpp.o CMakeFiles/MemoryLeakLib.dir/Comment.cpp.o
+/usr/bin/ranlib libMemoryLeakLib.a
