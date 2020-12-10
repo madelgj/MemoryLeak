@@ -41,18 +41,18 @@ Interaction* Question::removeInteraction(const int &id)
     Interaction* removed;
     Answer* commented_ans;
     vector<Comment*> comments;
+   // vector<Comment*> commentPosErase;
     for (unsigned long i=0;i<_interactions.size();i++){
         if(_interactions[i]->getId() == id){ // the interaction to remove is an answer/comment of a question
             removed = _interactions[i];
             _interactions.erase(_interactions.begin() + i);
             return removed;
         } else {
-            if (commented_ans = dynamic_cast<Answer*>(_interactions[i])){
+            if (commented_ans = dynamic_cast<Answer*>(_interactions[i])){ // if the interaction is an answer we check its comments
                 comments = commented_ans->getComments();
-                for (unsigned long i=0;i<comments.size();i++){
-                    if (comments[i]->getId() == id){ // the id corresponds to a comment of an answer
-                        removed = comments[i];
-                        comments.erase(comments.begin()+i);
+                for (unsigned long j=0;j<comments.size();j++){
+                    if (comments[j]->getId() == id){ // the id corresponds to a comment of an answer
+                        removed = commented_ans->removeComment(id);
                         return removed;
                     }
                 }
@@ -144,7 +144,7 @@ void Question::setTime(unsigned long int time)
 MemberProfileInfo* Question::getAuthor()
 {
     if (_author != nullptr) {
-        cout << "hola2" << endl << flush;
+      //  cout << "hola2" << endl << flush;
     }
     return _author;
 }
@@ -174,8 +174,6 @@ Interaction *Question::exists(const int &id)
     vector <Comment*> comments;
     Answer* commented_ans;
     for (unsigned long i=0; i<_interactions.size(); i++){
-//        cout << "the id we are checking is: " << id << endl << flush;
-//        cout << "the actual id is: " << _interactions[i]->getId()<< endl << flush;
         if (_interactions[i]->getId() == id){ // the id corresponds to an answer/comment of a question
             return _interactions[i];
         } else {

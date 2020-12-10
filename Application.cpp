@@ -391,13 +391,11 @@ bool Application::deleteInteraction(const int &idInteraction)
         return false;
     }
     int interactionToDelete = interactionIndex(idInteraction);
-    if(interactionToDelete != -1){
-        // we check if it's the question's author
-        cout << "hola15" << endl << flush;
-        cout << "autor de la pregunta es: " << endl;
-        //cout << _questions[interactionToDelete]->getAuthor()->getUsername() << endl << flush;
-       // cout << "el miembro actualmente logeado es :" << _members[_currentMember]->getUsername() << endl << flush;
-        if(_questions[interactionToDelete]->getAuthor()->getUsername()==_members[_currentMember]->getUsername()){
+    Interaction* interactionToBeDeleted = interactionExists(idInteraction);
+    cout << "the index of the interaction to delete is: " << interactionToDelete<< endl << flush;
+    if(interactionToDelete != -1){ //if the interaction exists
+        // we check if it's the interaction's author
+        if(interactionToBeDeleted->getAuthor()->getUsername()==_members[_currentMember]->getUsername()){
             _questions[interactionToDelete]->removeInteraction(idInteraction);
             return true;
         }
@@ -471,6 +469,7 @@ int Application::interactionIndex(const int &idInteraction){
         if (answerToClose != nullptr){
             return i;
         }
+
     }
     return -1;
 }
