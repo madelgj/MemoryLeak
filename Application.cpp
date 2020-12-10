@@ -198,10 +198,10 @@ bool Application::comment(const int &idQA, const string &commentText)
     if(answerToComment!=nullptr){
 
         if(dynamic_cast <Answer*> (answerToComment) != nullptr){
-        Answer* targetAnswer = dynamic_cast<Answer*>(answerToComment);
-        _id++;
-        targetAnswer->addComment(new Comment(_id,time,(MemberProfileInfo*)getCurrentMember(),commentText));
-        return true;
+            Answer* targetAnswer = dynamic_cast<Answer*>(answerToComment);
+            _id++;
+            targetAnswer->addComment(new Comment(_id,time,(MemberProfileInfo*)getCurrentMember(),commentText));
+            return true;
         }
     }
 
@@ -390,14 +390,22 @@ bool Application::deleteInteraction(const int &idInteraction)
     if (!isLogged()){
         return false;
     }
-    int interactionToDelete = interactionIndex(idInteraction);
-    Interaction* interactionToBeDeleted = interactionExists(idInteraction);
-    cout << "the index of the interaction to delete is: " << interactionToDelete<< endl << flush;
-    if(interactionToDelete != -1){ //if the interaction exists
-        // we check if it's the interaction's author
-        if(interactionToBeDeleted->getAuthor()->getUsername()==_members[_currentMember]->getUsername()){
-            _questions[interactionToDelete]->removeInteraction(idInteraction);
-            return true;
+    for(int a=0; a<_questions.size();a++){ //we check in all questions
+        vector <Interaction*> delInt = _questions[a]->getInteractions();//we get all interactions in each question
+        for(int b=0;b<delInt.size();b++){
+            if (delInt[b]->getId()==idInteraction && delInt[b]->getAuthor()==_members[_currentMember]){
+                delete delInt[b];
+                return true;
+            }
+            if(delInt[b]->getTyp()=="Answer"){//if the interaction is an answer, we check for all comments inside
+                vector <Comment*> delCom = ( dynamic_cast <Answer*> (delInt[b]) )->getComments();
+                for (int c = 0; c < delCom.size(); c++){
+                    if(delCom[c]->getId()==idInteraction && delCom[c]->getAuthor() == _members[_currentMember]){
+                        delete delInt[c];
+                        return true;
+                    }
+                }
+            }
         }
     }
     return false;
@@ -469,7 +477,6 @@ int Application::interactionIndex(const int &idInteraction){
         if (answerToClose != nullptr){
             return i;
         }
-
     }
     return -1;
 }
