@@ -395,8 +395,8 @@ bool Application::deleteInteraction(const int &idInteraction)
         // we check if it's the question's author
         cout << "hola15" << endl << flush;
         cout << "autor de la pregunta es: " << endl;
-        cout << _questions[interactionToDelete]->getAuthor()->getUsername() << endl << flush;
-        cout << "el miembro actualmente logeado es :" << _members[_currentMember]->getUsername() << endl << flush;
+        //cout << _questions[interactionToDelete]->getAuthor()->getUsername() << endl << flush;
+       // cout << "el miembro actualmente logeado es :" << _members[_currentMember]->getUsername() << endl << flush;
         if(_questions[interactionToDelete]->getAuthor()->getUsername()==_members[_currentMember]->getUsername()){
             _questions[interactionToDelete]->removeInteraction(idInteraction);
             return true;

@@ -4,6 +4,8 @@
 #include <vector>
 #include "Member.hpp"
 #include "Interaction.hpp"
+#include "Answer.hpp"
+#include "Comment.hpp"
 #include <sstream>
 
 using namespace std;
