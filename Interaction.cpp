@@ -48,7 +48,6 @@ string Interaction::getTyp()
 
 int Interaction::getId() const
 {
-    cout << "the id is: " << _id << endl << flush;
     return _id;
 }
 

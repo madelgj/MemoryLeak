@@ -9,9 +9,6 @@ Answer::Answer(const int &id,unsigned long time,MemberProfileInfo* author,const 
 
 Answer::~Answer()
 {
-    for (unsigned int i=0;i<_comments.size();i++){
-        delete _comments.at(i);
-    }
     _comments.clear();
 }
 
@@ -43,7 +40,7 @@ Comment *Answer::removeComment(const int &id)
     return nullptr;
 }
 
-vector<Comment *>Answer::getComments() const
+vector<Comment*>Answer::getComments()
 {
     return _comments;
 }

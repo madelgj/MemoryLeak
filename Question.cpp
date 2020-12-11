@@ -192,7 +192,7 @@ Interaction *Question::exists(const int &id)
     return nullptr;
 }
 
-vector<Interaction *> Question::getInteractions() const
+vector <Interaction*> Question::getInteractions()
 {
     return _interactions;
 }

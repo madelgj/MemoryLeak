@@ -5,6 +5,9 @@ Comment::Comment(const int &id, unsigned long time, MemberProfileInfo* author, c
     _type = "Comment";
 }
 
+Comment::~Comment()
+{}
+
 string Comment::show()
 {
     stringstream ss;

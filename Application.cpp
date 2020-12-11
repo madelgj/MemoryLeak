@@ -398,10 +398,10 @@ bool Application::deleteInteraction(const int &idInteraction)
                 return true;
             }
             if(delInt[b]->getTyp()=="Answer"){//if the interaction is an answer, we check for all comments inside
-                vector <Comment*> delCom = ( dynamic_cast <Answer*> (delInt[b]) )->getComments();
+                vector <Comment*> delCom = dynamic_cast <Answer*> (delInt[b])->getComments();
                 for (int c = 0; c < delCom.size(); c++){
-                    if(delCom[c]->getId()==idInteraction && delCom[c]->getAuthor() == _members[_currentMember]){
-                        delete delInt[c];
+                    if((delCom[c]->getId() == idInteraction) && (delCom[c]->getAuthor() == _members[_currentMember])){
+                        delete delCom[c]; // !!no se esta borrando esta posicion de memoria
                         return true;
                     }
                 }

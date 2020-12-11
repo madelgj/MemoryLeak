@@ -11,6 +11,7 @@ class Comment : public Interaction
 {
 public:
     Comment(const int &id, unsigned long time, MemberProfileInfo* author, const string &text);
+    ~Comment();
     string show();
     bool is();
 };

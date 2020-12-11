@@ -41,7 +41,7 @@ public:
     int getVotes() const;
 
     Interaction* exists(const int &id);
-    vector<Interaction *> getInteractions() const; // hacer funcion que devuelva la interaction correspondente con el id
+    vector<Interaction *> getInteractions() ; // hacer funcion que devuelva la interaction correspondente con el id
 
     bool questionHasTag(const string &tag);
 private:

@@ -18,7 +18,7 @@ public:
 
     void addComment(Comment* NewCom);
     Comment* removeComment(const int &id);
-    vector<Comment*> getComments() const;
+    vector<Comment*> getComments() ;
 
     bool getRightAnswer() const;
     void setRightAnswer(bool value);
