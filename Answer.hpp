@@ -18,13 +18,12 @@ public:
 
     void addComment(Comment* NewCom);
     Comment* removeComment(const int &id);
-    vector<Comment*> getComments() ;
+    vector<Comment*> getComments();
 
     bool getRightAnswer() const;
     void setRightAnswer(bool value);
 
     string show();
-    bool is();
 
     int getVotes() const;
 

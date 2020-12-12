@@ -1,26 +1,26 @@
 #include "MemberLoginInfo.hpp"
 
-std::string MemberLoginInfo::getPassword() const
+string MemberLoginInfo::getPassword() const
 {
     return _password;
 }
 
-void MemberLoginInfo::setEmail(const std::string &email)
+void MemberLoginInfo::setEmail(const string &email)
 {
     _email = email;
 }
 
-void MemberLoginInfo::setPassword(const std::string &password)
+void MemberLoginInfo::setPassword(const string &password)
 {
     _password = password;
 }
 
-std::string MemberLoginInfo::getEmail() const
+string MemberLoginInfo::getEmail() const
 {
     return _email;
 }
 
-MemberLoginInfo::MemberLoginInfo(std::string email, std::string password)
+MemberLoginInfo::MemberLoginInfo(const string &email, const string &password)
 {
     _email = email;
     _password = password;

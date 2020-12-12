@@ -5,11 +5,11 @@
 #include "MemberLoginInfo.hpp"
 #include "MemberProfileInfo.hpp"
 
-
+using namespace std;
 class Member : public MemberProfileInfo, public MemberLoginInfo
 {
 public:
-    Member(std::string username,std::string bio, std::string email, std::string password);
+    Member(string username,string bio,string email,string password);
     ~Member();
 
     bool hasUpvoted(const int &id) ;
@@ -21,8 +21,8 @@ public:
     void removeDownvoted(const int &downvoted);
 
 private:
-    std::vector<int> _upvoted;
-    std::vector<int> _downvoted;
+    vector<int> _upvoted;
+    vector<int> _downvoted;
 };
 
 #endif // MEMBER_HPP

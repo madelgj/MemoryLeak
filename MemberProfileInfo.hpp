@@ -2,17 +2,17 @@
 #define MEMBERPROFILEINFO_HPP
 #include <iostream>
 
-
+using namespace std;
 class MemberProfileInfo
 {
 public:
     ~MemberProfileInfo();
     //getters & setters
     int getReputation() const;
-    std::string getUsername() const;
-    std::string getBio() const;
-    void setUsername(const std::string &username);
-    void setBio(const std::string &bio);
+    string getUsername() const;
+    string getBio() const;
+    void setUsername(const string &username);
+    void setBio(const string &bio);
 
     //methods
     void decreaseReputation();
@@ -22,9 +22,9 @@ private:
     MemberProfileInfo();
 
 protected:
-   MemberProfileInfo(const std::string &username, const std::string &bio);
-   std::string _username;
-   std::string _bio;
+   MemberProfileInfo(const string &username, const string &bio);
+   string _username;
+   string _bio;
    int _reputation;
 };
 

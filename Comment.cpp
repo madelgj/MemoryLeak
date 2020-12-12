@@ -11,13 +11,11 @@ Comment::~Comment()
 string Comment::show()
 {
     stringstream ss;
-    ss << '\t' << "Comment:" << endl;
-    ss << '\t' << _id << " - " << _time << " - " << _author->getUsername() << ":" << endl;
+    ss << '\t' << "Comment:" << '\n';
+    ss << '\t' << _id << " - " << _time << " - " << _author->getUsername() << ":" << '\n';
     ss << '\t' << _text;
 
     return ss.str();
 }
 
-bool Comment::is(){
-    return false;
-}
+

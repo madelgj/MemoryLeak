@@ -11,6 +11,7 @@ public:
     Interaction(const int &id, const string &text, MemberProfileInfo* author,unsigned long time);
     virtual ~Interaction();
 
+    //setters and getters
     int getId() const;
     void setId(const int &id);
 
@@ -23,6 +24,7 @@ public:
     MemberProfileInfo *getAuthor() const;
     void setAuthor(MemberProfileInfo *author);
 
+    // other methods
     virtual string show()=0;
     string getTyp();
 

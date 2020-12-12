@@ -65,26 +65,26 @@ Interaction* Question::removeInteraction(const int &id)
 string Question::show()
 {
     stringstream ss;
-    ss << _id << " - " << _title << endl;
-    ss << " -------" << endl;
-    ss << "by " << _author->getUsername() << " on " << _time << endl;
+    ss << _id << " - " << _title << '\n';
+    ss << " -------" << '\n';
+    ss << "by " << _author->getUsername() << " on " << _time << '\n';
     ss << "Tags: ";
     for (unsigned long i=0; i<_tags.size();i++){
         if (i!=0){ ss << "/"; }
         ss << _tags[i];
     }
-    ss << endl;
+    ss << '\n';
     if (_closed == true){
         ss << "closed - ";
     } else{
         ss << "open - ";
     }
-    ss << _votes << " votes" << endl;
-    ss << "---" << endl;
-    ss << _description << endl;
+    ss << _votes << " votes" << '\n';
+    ss << "---" << '\n';
+    ss << _description << '\n';
     for (unsigned long i=0; i<_interactions.size();i++){
-        ss << "---" << endl;
-        ss << _interactions[i]->show() << endl;
+        ss << "---" << '\n';
+        ss << _interactions[i]->show() << '\n';
     }
     ss << "---";
     return ss.str();
@@ -143,9 +143,7 @@ void Question::setTime(unsigned long int time)
 
 MemberProfileInfo* Question::getAuthor()
 {
-    if (_author != nullptr) {
-        cout << "hola2" << endl << flush;
-    }
+
     return _author;
 }
 
@@ -174,8 +172,6 @@ Interaction *Question::exists(const int &id)
     vector <Comment*> comments;
     Answer* commented_ans;
     for (unsigned long i=0; i<_interactions.size(); i++){
-//        cout << "the id we are checking is: " << id << endl << flush;
-//        cout << "the actual id is: " << _interactions[i]->getId()<< endl << flush;
         if (_interactions[i]->getId() == id){ // the id corresponds to an answer/comment of a question
             return _interactions[i];
         } else {

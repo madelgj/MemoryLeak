@@ -2,21 +2,21 @@
 #define MEMBERLOGININFO_HPP
 #include<iostream>
 
+using namespace std;
 class MemberLoginInfo
 {
 public:
 
-    //getters & setters publicos o protected?
-    std::string getPassword() const;
-    void setEmail(const std::string &email);
-    void setPassword(const std::string &password);
-    std::string getEmail() const;
+    //getters & setters
+    string getPassword() const;
+    void setEmail(const string &email);
+    void setPassword(const string &password);
+    string getEmail() const;
 
 protected:
-    std::string _email;
-    std::string _password;
-
-    MemberLoginInfo(std::string email, std::string password);
+    string _email;
+    string _password;
+    MemberLoginInfo(const string &email, const string &password);
 
 private:
     MemberLoginInfo();

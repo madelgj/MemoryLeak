@@ -65,6 +65,7 @@ Member* Application::getCurrentMember()
     if(_currentMember==-1){
         return NULL;
     }
+    cout << "el miembro actual es" << _members[_currentMember]->getUsername()<< endl;
     return _members[_currentMember];
 }
 
@@ -154,6 +155,9 @@ bool Application::createQuestion(const string &title, const string &description,
         return false;
     }
     _id++;
+    //map --> vector de pares
+    //funcion q devuelva un vector de id de todas las question o answer o comments
+    // setMasterId para meter id de la pregunta/respuesta a la q corresponda
 
     unsigned long time = 10; //how to set time? I think we can set a random value
     _questions.push_back(new Question(_id,time,(MemberProfileInfo*)getCurrentMember(),title,description,tags));
@@ -390,18 +394,18 @@ bool Application::deleteInteraction(const int &idInteraction)
     if (!isLogged()){
         return false;
     }
-    for(int a=0; a<_questions.size();a++){ //we check in all questions
+    for(unsigned long a=0; a<_questions.size();a++){ //we check in all questions
         vector <Interaction*> delInt = _questions[a]->getInteractions();//we get all interactions in each question
-        for(int b=0;b<delInt.size();b++){
+        for(unsigned long b=0;b<delInt.size();b++){ // we check if the id corresponds to any interaction
             if (delInt[b]->getId()==idInteraction && delInt[b]->getAuthor()==_members[_currentMember]){
-                delete delInt[b];
+                _questions[a]->removeInteraction(idInteraction);
                 return true;
             }
             if(delInt[b]->getTyp()=="Answer"){//if the interaction is an answer, we check for all comments inside
                 vector <Comment*> delCom = dynamic_cast <Answer*> (delInt[b])->getComments();
                 for (int c = 0; c < delCom.size(); c++){
                     if((delCom[c]->getId() == idInteraction) && (delCom[c]->getAuthor() == _members[_currentMember])){
-                        delete delCom[c]; // !!no se esta borrando esta posicion de memoria
+                        dynamic_cast<Answer*>(_questions[a]->getInteractions().at(b))->removeComment(idInteraction);
                         return true;
                     }
                 }
@@ -454,7 +458,6 @@ int Application::questionExists(const int &idQuestion)
             return i;
         }
     }
-
     return -1;
 }
 
@@ -469,7 +472,6 @@ Interaction* Application::interactionExists(const int &idInteraction){
     return answerToClose;
 }
 
-// we could avoid this method by passing the index above
 int Application::interactionIndex(const int &idInteraction){
     Interaction* answerToClose;
     for (unsigned long i=0;i<_questions.size();i++){     // the id corresponds to an interaction
@@ -480,3 +482,223 @@ int Application::interactionIndex(const int &idInteraction){
     }
     return -1;
 }
+
+bool Application::saveToFile(const string &filename)
+{
+    ofstream dataFile;
+    vector<Interaction*> interacciones;
+    vector<Comment*> comments;
+    Comment* commentToSave;
+    Answer* AnswerToSave;
+    dataFile.open(filename);
+
+    if(dataFile.is_open()){
+
+        // we save the info of all members
+        for(unsigned long i=0;i<_members.size();i++){
+            dataFile << "Member: \n";
+            cout << "Member: \n";
+            dataFile << _members[i]->getUsername() << '\n';
+            cout <<  _members[i]->getUsername() << '\n';
+            dataFile << _members[i]->getBio() << '\n';
+            cout << _members[i]->getBio() << '\n';
+            dataFile << _members[i]->getEmail() << '\n';
+            cout << _members[i]->getEmail() << '\n';
+            dataFile << _members[i]->getPassword() << '\n';
+            cout << _members[i]->getPassword() << '\n';
+            dataFile << _members[i]->getReputation() << '\n';
+            cout << _members[i]->getReputation() << '\n';
+        }
+        // we save the info of all questions
+        for (unsigned long i=0;i<_questions.size();i++){
+            dataFile << "Question: \n";
+            dataFile << _questions[i]->getId() << '\n';
+            dataFile << _questions[i]->getTitle() << '\n';
+            dataFile << _questions[i]->getDescription() << '\n';
+            for(unsigned long j=0;j<_questions[i]->getTags().size();j++){
+                dataFile << _questions[i]->getTags()[j] << ",";
+            }
+            dataFile << '\n';
+            dataFile << _questions[i]->getTime() << '\n';
+            dataFile << _questions[i]->getAuthor()->getUsername() << '\n';
+            dataFile << _questions[i]->getVotes() << '\n';
+            if (_questions[i]->getClosed()){
+                dataFile << "1 \n";
+            } else{
+                dataFile << "0 \n";
+            }
+            // we save the info of all interactions within the questions
+            interacciones = _questions[i]->getInteractions();
+            for(unsigned long k=0;k<_questions[i]->getInteractions().size();k++){
+                AnswerToSave = dynamic_cast<Answer*>(interacciones[k]);
+                if(AnswerToSave != nullptr){
+                    dataFile << "Answer:" << '\n';
+                    dataFile << AnswerToSave->getId() << '\n';
+                    dataFile << AnswerToSave->getTime() << '\n';
+                    dataFile << AnswerToSave->getAuthor()->getUsername() << '\n';
+                    dataFile << AnswerToSave->getVotes() << '\n';
+                    if(AnswerToSave->getRightAnswer()){
+                        dataFile << "1" << '\n';
+                    }else{
+                        dataFile << "0" << '\n';
+                    }
+                    dataFile << AnswerToSave->getText() << '\n';
+                    comments = AnswerToSave->getComments();
+
+                    // we save the info of all comments within an answer
+                    for(unsigned long l=0;l<comments.size();l++){
+                        dataFile << "AnsComment:" << '\n';
+                        dataFile << comments[l]->getId() << '\n';
+                        dataFile << comments[l]->getTime() << '\n';
+                        dataFile << comments[l]->getAuthor()->getUsername() << '\n';
+                        dataFile << comments[l]->getText() << '\n';
+                    }
+
+                }else{
+
+                    commentToSave = dynamic_cast<Comment*>(interacciones[i]);
+                    if(commentToSave!= nullptr){
+                        dataFile << "Comment:" << '\n';
+                        dataFile << commentToSave->getId() << '\n';
+                        dataFile << commentToSave->getTime() << '\n';
+                        dataFile << commentToSave->getAuthor()->getUsername() << '\n';
+                        dataFile << commentToSave->getText() << '\n';
+                    }
+
+
+                }
+            }
+        }
+    }
+    return true;
+}
+
+bool Application::loadFromFile(const string &filename)
+{
+    ifstream dataFile(filename);
+    dataFile.open(filename);
+
+    string firstLine;
+    string username,bio,email,password,title,text,tag,description,id,reputation,votes,closed,rightAnswer,time;
+    vector<string> tags;
+    if(dataFile.is_open()){
+
+        while(!dataFile.eof()){
+            getline(dataFile,firstLine);
+            if(firstLine == "Member:"){
+
+                getline(dataFile,username);
+                getline(dataFile,bio);
+                getline(dataFile,email);
+                getline(dataFile,password);
+                getline(dataFile,reputation);
+
+                createMember(username,bio,email,password);
+                for(int i=0;i<stoi(reputation);i++){
+                    _members.back()->increaseReputation();
+                }
+            }
+
+            if(firstLine == "Question:"){
+
+                getline(dataFile,id);
+                getline(dataFile,title);
+                getline(dataFile,description);
+                getline(dataFile,tag);
+                getline(dataFile,time);
+                getline(dataFile,username);
+                getline(dataFile,votes);
+                getline(dataFile,closed);
+
+                string parseTags;
+                for(unsigned long i=0;tag.size();i++){
+                    if (tag[i] != ','){
+                        parseTags+=tag[i];
+                    } else{
+                        tags.push_back(parseTags);
+                        parseTags.clear();
+                    }
+                    _questions.back()->setId(stoi(id));
+
+                }
+                createQuestion(title,description,tags);
+                _questions.back()->setId(stoi(id));
+                _questions.back()->setTime(stoul(time));
+                _questions.back()->getAuthor()->setUsername(username);
+                if(closed=="0"){
+                    _questions.back()->setClosed(false);
+                }else{
+                    _questions.back()->setClosed(true);
+                }
+
+                if (stoi(votes)>0){
+                   for(int i=0;i<stoi(votes);i++){
+                        _questions.back()->incrementVotes();
+                    }
+                } else {
+                    for(int i=0;i>stoi(votes);i--){
+                         _questions.back()->decrementVotes();
+                     }
+                }
+            }
+            if(firstLine == "Answer:"){
+
+                getline(dataFile,id);
+                getline(dataFile,time);
+                getline(dataFile,username);
+                getline(dataFile,votes);
+                getline(dataFile,rightAnswer);
+                getline(dataFile,text);
+
+                answerQuestion(_questions.back()->getId(),text);
+                dynamic_cast<Answer*>(_questions.back()->getInteractions().back())->setId(stoi(id));
+                dynamic_cast<Answer*>(_questions.back()->getInteractions().back())->setTime(stoul(time));
+                dynamic_cast<Answer*>(_questions.back()->getInteractions().back())->getAuthor()->setUsername(username);
+                if(rightAnswer == "0"){
+                    dynamic_cast<Answer*>(_questions.back()->getInteractions().back())->setRightAnswer(false);
+                } else{
+                    dynamic_cast<Answer*>(_questions.back()->getInteractions().back())->setRightAnswer(true);
+                }
+
+                if (stoi(votes)>0){
+                   for(int i=0;i<stoi(votes);i++){
+                        dynamic_cast<Answer*>(_questions.back()->getInteractions().back())->incrementVotes();                        }
+                } else {
+                    for(int i=0;i>stoi(votes);i--){
+                        dynamic_cast<Answer*>(_questions.back()->getInteractions().back())->decrementVotes();                        }
+                     }
+                }
+            }
+
+            if(firstLine == "Comment:"){
+
+                getline(dataFile,id);
+                getline(dataFile,time);
+                getline(dataFile,username);
+                getline(dataFile,text);
+                comment(_questions.back()->getId(),text);
+                dynamic_cast<Comment*>(_questions.back()->getInteractions().back())->setTime(stoul(time));
+                dynamic_cast<Comment*>(_questions.back()->getInteractions().back())->getAuthor()->setUsername(username);
+            }
+
+            if(firstLine == "AnsComment:"){
+
+                getline(dataFile,id);
+                getline(dataFile,time);
+                getline(dataFile,username);
+                getline(dataFile,text);
+                for(int i=0;i<_members.size();i++){
+                    if(_members[i]->getUsername()==username){
+                        login(_members[i]->getEmail(),_members[i]->getPassword());
+                    }
+
+                dynamic_cast<Answer*>(_questions.back()->getInteractions().back())->addComment(new Comment(stoi(id),stoul(time),(MemberProfileInfo*)_members[i],text));
+                logout();
+            }
+         }
+        dataFile.close();
+    }
+    return true;
+}
+
+

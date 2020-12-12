@@ -4,7 +4,7 @@ Answer::Answer(const int &id,unsigned long time,MemberProfileInfo* author,const 
 {
     _votes = 0;
     right_answer = false;
-    _type = "Answer";
+    _type = "Answer"; // each interaction has an attribute to specify the type of interaction it is
 }
 
 Answer::~Answer()
@@ -30,7 +30,7 @@ void Answer::addComment(Comment *NewCom)
 Comment *Answer::removeComment(const int &id)
 {
     Comment* removed;
-    for (unsigned long i=0;i<_comments.size();i++){
+    for (unsigned long i=0;i<_comments.size();i++){ // we check if the id matches any comment
         if(_comments[i]->getId() == id){
             removed = _comments[i];
             _comments.erase(_comments.begin() + i);
@@ -58,16 +58,16 @@ void Answer::setRightAnswer(bool value)
 string Answer::show()
 {
     stringstream ss;
-    ss << '\t' << "Answer:" << endl;
+    ss << '\t' << "Answer:" << '\n';
     ss << '\t' << _id << " - " << _time << " - " << _author->getUsername() << ":";
     if(right_answer){
         ss << "\naccepted";
     }
     else{
-        ss << endl;
+        ss << '\n';
     }
-    ss <<" - " << _votes << " votes" << endl;
-    ss << '\t' << _text << endl;
+    ss <<" - " << _votes << " votes" << '\n';
+    ss << '\t' << _text << '\n';
     ss << "\t--";
     for (unsigned long i=0; i<_comments.size();i++){
             ss << "\n\t" << _comments[i]->show() << "\n\t-";
@@ -81,6 +81,3 @@ int Answer::getVotes() const
     return _votes;
 }
 
-bool Answer::is(){
-    return true;
-}
