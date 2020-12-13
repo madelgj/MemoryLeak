@@ -25,56 +25,131 @@ int main()
 
 )";
 
-//    Application manager;
-//    int ps=0; //present state of machine
-//    int ns;//next state of machine
-//    string user, password;
+    Application manager;
+    manager.createMember("admin","admin","admin","admin");
+    int ps=0; //present state of machine
 
-//    while (ps!=-1) {
-//        switch (ps) {
-//        case 0:
-//            cout<<"Press the following for:\n\n";
-//            cout<<"\t 1)Log in\n\t 2)Sign up\n\n";
-//            cin>>ns;
-//            break;
+    while (ps!=-1) {
+        switch (ps) {
+        case 0:
+            cout<<"Press the following for:\n\n";
+            cout<<"\t 1)Log in\n\t 2)Sign up\n\n";
+            cin>>ps;
+            break;
 
-//        case 1:
-//            cout<<"Please enter your username:\n";
-//            cin>>user;
-//            cout<<"Please enter your password:\n";
-//            cin>>password;
-//            if(manager.login(user,password)==1){
-//                cout<<"Hello!, welcome back\n\n" << manager.getCurrentMember()->getUsername() << "\n\n";
-//                ns=3;
-//            }
-//            else{
-//                cout<<"Incorrect user or password!!\n";
-//                ns=1;
-//            }
-//            break;
+        case 1:
+        {
+            string email, password;
+            cout<<"Please enter your email:\n";
+            cin>>email;
+            cout<<"Please enter your password:\n";
+            cin>>password;
+            if(manager.login(email,password)==1){
+                cout<<"Hello!, welcome back" << manager.getCurrentMember()->getUsername() << "\n\n";
+                ps=3;
+            }
+            else{
+                cout<<"Incorrect user or password!!\n\n";
+                ps=1;
+            }
+            break;
+        }
 
-//        case 2:
-//            cout<<"Please enter your desired username:\n\n";
-//            cin>>user;
-//            cout<<"Please enter your desired password:\n\n";
-//            cin>>password;
-//            if(manager.createMember(user,"","",password) == 1){
-//                cout<<"Congrats, your ccount has been successfully created!!\n";
-//                cout<<"Please remember to complete your account info in settings once you log in\n\n";
-//                ns=1;
-//            }
-//            else{
-//                cout<<"Username already exist! \n\n";
-//                ns=2;
-//            }
-//            break;
+        case 2:
+        {
+            string user, password, email;
+            cout<<"Please enter your desired username:\n\n";
+            cin>>user;
+            cout<<"Please enter your email:\n\n";
+            cin>>email;
+            cout<<"Please enter your desired password:\n\n";
+            cin>>password;
+            if(manager.createMember(user,"Empty field",email,password) == 1){
+                cout<<"Congrats, your ccount has been successfully created!!\n";
+                cout<<"Please remember to complete your bio in settings once you log in\n\n";
+                ps=0;
+            }
+            else{
+                cout<<"Username already exist! \n\n";
+                ps=2;
+            }
+            break;
+        }
 
-//        default:
-//            cout<<"No valid option, please enter again\n\n";
-//            ns=ps;
-//        }
-//     ps=ns;
-//    }
+       case 3:
+        {
+            cout<<"Press the following for:\n\n";
+            cout<<"\t 1)Newly added questions\n\t 2)Ask a question\n\t 3)Account settings\n\n";
+            cin>>ps;
+            ps+=3;
+            break;
+        }
+
+       case 5:
+        {
+            string title, description, tag;
+            vector <string> tags;
+            cout << "Please enter your question title\n";
+            cin >> title;
+            cout << "Please enter your question description\n";
+            cin >> description;
+            cout << "Please enter your question tags, enter * to indicate you are done\n";
+            cin >> tag;
+            tags.push_back(tag);
+            while(tag != "*"){
+                cout << "Please enter another tag: \n";
+                cin >> tag;
+                if(tag!="*"){ tags.push_back(tag); }
+            }
+            cout<<"\n";
+            manager.createQuestion(title,description,tags);
+            ps = 3;
+            break;
+        }
+
+        case 6:
+         {
+            int edit;
+            string username,email,password,bio;
+             cout<<"Press the following to edit:\n\n";
+             cout<<"\t1)Username: "<<manager.getCurrentMember()->getUsername()<<"\n";
+             cout<<"\t2)Email: "<<manager.getCurrentMember()->getEmail()<<"\n";
+             cout<<"\t3)Password "<<manager.getCurrentMember()->getPassword()<<"\n";
+             cout<<"\t4)Bio: "<<manager.getCurrentMember()->getBio()<<"\n";
+             cout<<"\t5)Go back to main menu\n\n";
+             cin>>edit;
+             switch(edit){
+             case 1:
+                 cout<<"Enter your new username\n";
+                 cin>>username;
+                 manager.getCurrentMember()->setUsername(username);
+                 break;
+             case 2:
+                 cout<<"Enter your new email\n";
+                 cin>>email;
+                 manager.getCurrentMember()->setEmail(email);
+                 break;
+             case 3:
+                 cout<<"Enter your new password\n";
+                 cin>>password;
+                 manager.getCurrentMember()->setPassword(password);
+                 break;
+             case 4:
+                 cout<<"Enter your new bio\n";
+                 cin>>bio;
+                 manager.getCurrentMember()->setBio(bio);
+                 break;
+             case 5:
+                 ps=3;
+                 break;
+             }
+             break;
+         }
+
+        default:
+            cout<<"No valid option, please enter again\n\n";
+        }
+    }
 
     return 0;
 }
