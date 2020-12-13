@@ -732,4 +732,9 @@ bool Application::loadFromFile(const string &filename)
     return true;
 }
 
+void Application::ClearScreen()
+{
+    cout << string( 100, '\n' );
+}
+
 

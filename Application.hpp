@@ -71,6 +71,8 @@ public:
     bool saveToFile(const string &filename);
     bool loadFromFile(const string &filename);
 
+    void ClearScreen();
+
 
 private:
     vector<Member*> _members;
