@@ -37,7 +37,7 @@ int main()
             cin>>ps;
             break;
 
-        case 1:
+        case 1: //Initial page
         {
             string email, password;
             cout<<"Please enter your email:\n";
@@ -55,7 +55,7 @@ int main()
             break;
         }
 
-        case 2:
+        case 2: //Sign in page
         {
             string user, password, email;
             cout<<"Please enter your desired username:\n\n";
@@ -76,16 +76,48 @@ int main()
             break;
         }
 
-       case 3:
+       case 3:  //Welcome page
         {
             cout<<"Press the following for:\n\n";
-            cout<<"\t 1)Newly added questions\n\t 2)Ask a question\n\t 3)Account settings\n\n";
+            cout<<"\t 1)Newly added questions\n\t 2)Ask a question\n\t 3)Account settings\n\t 4)My Questions\n\n";
             cin>>ps;
             ps+=3;
             break;
         }
 
-       case 5:
+        case 4: //Feed page
+        {
+            int id,index=-1;
+
+            cout<<"Question feed:\n";
+            cout<<" -- Type question id to interact with -- \n\n";
+            vector <Question*> printQ = manager.getQuestions();
+            for (int  a = 0;  a < printQ.size(); a++) {
+                cout<<"\tID: "<<printQ[a]->getId();
+                cout<<"\tTitle: "<<printQ[a]->getTitle();
+            }
+            cout<<"\n\n";
+            cin>>id;
+
+            for (int  a = 0;  a < printQ.size(); a++) {
+                if(id==printQ[a]->getId()){
+                    index=a;
+                    a=printQ.size();
+                }
+            }
+
+            if(index!=-1){
+                printQ[index]->show();
+            }
+
+            else{
+                cout<<"ID does not match\n\n";
+            }
+
+            break;
+        }
+
+       case 5:  //Add question page
         {
             string title, description, tag;
             vector <string> tags;
@@ -107,7 +139,7 @@ int main()
             break;
         }
 
-        case 6:
+        case 6: //Edit account page
          {
             int edit;
             string username,email,password,bio;
