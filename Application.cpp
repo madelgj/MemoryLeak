@@ -65,7 +65,6 @@ Member* Application::getCurrentMember()
     if(_currentMember==-1){
         return NULL;
     }
-    cout << "el miembro actual es" << _members[_currentMember]->getUsername()<< endl;
     return _members[_currentMember];
 }
 
@@ -488,6 +487,7 @@ bool Application::saveToFile(const string &filename)
     ofstream dataFile;
     vector<Interaction*> interacciones;
     vector<Comment*> comments;
+    vector<string> tagsToSave;
     Comment* commentToSave;
     Answer* AnswerToSave;
     dataFile.open(filename);
@@ -496,36 +496,36 @@ bool Application::saveToFile(const string &filename)
 
         // we save the info of all members
         for(unsigned long i=0;i<_members.size();i++){
-            dataFile << "Member: \n";
-            cout << "Member: \n";
+            dataFile << "Member:\n";
             dataFile << _members[i]->getUsername() << '\n';
-            cout <<  _members[i]->getUsername() << '\n';
             dataFile << _members[i]->getBio() << '\n';
-            cout << _members[i]->getBio() << '\n';
             dataFile << _members[i]->getEmail() << '\n';
-            cout << _members[i]->getEmail() << '\n';
             dataFile << _members[i]->getPassword() << '\n';
-            cout << _members[i]->getPassword() << '\n';
             dataFile << _members[i]->getReputation() << '\n';
-            cout << _members[i]->getReputation() << '\n';
         }
         // we save the info of all questions
         for (unsigned long i=0;i<_questions.size();i++){
-            dataFile << "Question: \n";
+            dataFile << "Question:\n";
             dataFile << _questions[i]->getId() << '\n';
             dataFile << _questions[i]->getTitle() << '\n';
             dataFile << _questions[i]->getDescription() << '\n';
-            for(unsigned long j=0;j<_questions[i]->getTags().size();j++){
-                dataFile << _questions[i]->getTags()[j] << ",";
+            tagsToSave =  _questions[i]->getTags();
+          //  dataFile << tagsToSave[0];
+            dataFile << _questions[i]->getTags()[0];
+//            for (unsigned long j=1;j<tagsToSave.size();j++){
+//                dataFile << "," << tagsToSave[j];
+//            }
+            for(unsigned long j=1;j<_questions[i]->getTags().size();j++){
+                dataFile << ","<< _questions[i]->getTags()[j];
             }
             dataFile << '\n';
             dataFile << _questions[i]->getTime() << '\n';
             dataFile << _questions[i]->getAuthor()->getUsername() << '\n';
             dataFile << _questions[i]->getVotes() << '\n';
             if (_questions[i]->getClosed()){
-                dataFile << "1 \n";
+                dataFile << "1\n";
             } else{
-                dataFile << "0 \n";
+                dataFile << "0\n";
             }
             // we save the info of all interactions within the questions
             interacciones = _questions[i]->getInteractions();
@@ -556,7 +556,7 @@ bool Application::saveToFile(const string &filename)
 
                 }else{
 
-                    commentToSave = dynamic_cast<Comment*>(interacciones[i]);
+                    commentToSave = dynamic_cast<Comment*>(interacciones[k]);
                     if(commentToSave!= nullptr){
                         dataFile << "Comment:" << '\n';
                         dataFile << commentToSave->getId() << '\n';
@@ -564,8 +564,6 @@ bool Application::saveToFile(const string &filename)
                         dataFile << commentToSave->getAuthor()->getUsername() << '\n';
                         dataFile << commentToSave->getText() << '\n';
                     }
-
-
                 }
             }
         }
@@ -573,35 +571,34 @@ bool Application::saveToFile(const string &filename)
     return true;
 }
 
-bool Application::loadFromFile(const string &filename) //HACE FALTA HACER LOGIN???????????????????????????????????
+bool Application::loadFromFile(const string &filename)
 {
     ifstream dataFile(filename);
-    dataFile.open(filename);
-
-    string firstLine;
+    string currentLine;
     string username,bio,email,password,title,text,tag,description,id,reputation,votes,closed,rightAnswer,time;
     vector<string> tags;
+    unordered_map<int, bool> questions_closed;
+
     if(dataFile.is_open()){
 
-        while(!dataFile.eof()){
-            getline(dataFile,firstLine);
-            if(firstLine == "Member:"){
-
+        while(getline(dataFile,currentLine)){
+            if(currentLine == "Member:"){
                 getline(dataFile,username);
                 getline(dataFile,bio);
                 getline(dataFile,email);
                 getline(dataFile,password);
                 getline(dataFile,reputation);
-
                 createMember(username,bio,email,password);
                 for(int i=0;i<stoi(reputation);i++){
                     _members.back()->increaseReputation();
                 }
             }
 
-            if(firstLine == "Question:"){
-
+            if(currentLine == "Question:"){
+                cout << "Creating a question: " <<  endl;
+                tags.clear();
                 getline(dataFile,id);
+                cout << "question id: "<< id << endl;
                 getline(dataFile,title);
                 getline(dataFile,description);
                 getline(dataFile,tag);
@@ -611,26 +608,32 @@ bool Application::loadFromFile(const string &filename) //HACE FALTA HACER LOGIN?
                 getline(dataFile,closed);
 
                 string parseTags;
-                for(unsigned long i=0;tag.size();i++){
+                for(unsigned long i=0;i<tag.size();i++){
                     if (tag[i] != ','){
                         parseTags+=tag[i];
                     } else{
                         tags.push_back(parseTags);
                         parseTags.clear();
                     }
-                    _questions.back()->setId(stoi(id));
+                }
+                tags.push_back(parseTags);
+                parseTags.clear();
 
+                for(unsigned long j=0;j<_members.size();j++){
+                    if(_members[j]->getUsername()==username){
+                        login(_members[j]->getEmail(),_members[j]->getPassword());
+                    }
                 }
                 createQuestion(title,description,tags);
                 _questions.back()->setId(stoi(id));
                 _questions.back()->setTime(stoul(time));
-                _questions.back()->getAuthor()->setUsername(username);
-                if(closed=="0"){
-                    _questions.back()->setClosed(false);
+                _questions.back()->setClosed(false);
+                if(closed=="0"){ // the question is still open
+                    questions_closed[stoi(id)] = false;
                 }else{
-                    _questions.back()->setClosed(true);
-                }
+                    questions_closed[stoi(id)] = true;
 
+                }
                 if (stoi(votes)>0){
                    for(int i=0;i<stoi(votes);i++){
                         _questions.back()->incrementVotes();
@@ -640,49 +643,68 @@ bool Application::loadFromFile(const string &filename) //HACE FALTA HACER LOGIN?
                          _questions.back()->decrementVotes();
                      }
                 }
-            }
-            if(firstLine == "Answer:"){
+                logout();
 
+            }
+            if(currentLine == "Answer:"){
                 getline(dataFile,id);
                 getline(dataFile,time);
                 getline(dataFile,username);
                 getline(dataFile,votes);
                 getline(dataFile,rightAnswer);
                 getline(dataFile,text);
-
+                for(unsigned long j=0;j<_members.size();j++){
+                    if(_members[j]->getUsername()==username){
+                        login(_members[j]->getEmail(),_members[j]->getPassword());
+                    }
+                }
                 answerQuestion(_questions.back()->getId(),text);
                 dynamic_cast<Answer*>(_questions.back()->getInteractions().back())->setId(stoi(id));
                 dynamic_cast<Answer*>(_questions.back()->getInteractions().back())->setTime(stoul(time));
-                dynamic_cast<Answer*>(_questions.back()->getInteractions().back())->getAuthor()->setUsername(username);
+
+                //dynamic_cast<Answer*>(_questions.back()->getInteractions().back())->getAuthor()->setUsername(username);
                 if(rightAnswer == "0"){
                     dynamic_cast<Answer*>(_questions.back()->getInteractions().back())->setRightAnswer(false);
                 } else{
                     dynamic_cast<Answer*>(_questions.back()->getInteractions().back())->setRightAnswer(true);
                 }
-
                 if (stoi(votes)>0){
                    for(int i=0;i<stoi(votes);i++){
-                        dynamic_cast<Answer*>(_questions.back()->getInteractions().back())->incrementVotes();                        }
+                        dynamic_cast<Answer*>(_questions.back()->getInteractions().back())->incrementVotes();
+                   }
                 } else {
                     for(int i=0;i>stoi(votes);i--){
-                        dynamic_cast<Answer*>(_questions.back()->getInteractions().back())->decrementVotes();                        }
+                        dynamic_cast<Answer*>(_questions.back()->getInteractions().back())->decrementVotes();
                      }
                 }
+
+                logout();
+                cout << "answer created"<<  endl;
+
             }
 
-            if(firstLine == "Comment:"){
 
+            if(currentLine == "Comment:"){
+                cout << "ccreating comment"<< endl;
                 getline(dataFile,id);
                 getline(dataFile,time);
                 getline(dataFile,username);
                 getline(dataFile,text);
+                for(unsigned long j=0;j<_members.size();j++){
+                    if(_members[j]->getUsername()==username){
+                        login(_members[j]->getEmail(),_members[j]->getPassword());
+                    }
+                }
                 comment(_questions.back()->getId(),text);
                 dynamic_cast<Comment*>(_questions.back()->getInteractions().back())->setTime(stoul(time));
+                dynamic_cast<Comment*>(_questions.back()->getInteractions().back())->setId(stoi(id));
                 dynamic_cast<Comment*>(_questions.back()->getInteractions().back())->getAuthor()->setUsername(username);
+                logout();
+                cout << "comment created"<<endl;
             }
 
-            if(firstLine == "AnsComment:"){
-
+            if(currentLine == "AnsComment:"){
+                cout << "creating answcoment"<< endl;
                 getline(dataFile,id);
                 getline(dataFile,time);
                 getline(dataFile,username);
@@ -690,12 +712,21 @@ bool Application::loadFromFile(const string &filename) //HACE FALTA HACER LOGIN?
                 for(int i=0;i<_members.size();i++){
                     if(_members[i]->getUsername()==username){
                         login(_members[i]->getEmail(),_members[i]->getPassword());
+                        dynamic_cast<Answer*>(_questions.back()->getInteractions().back())->addComment(new Comment(stoi(id),stoul(time),(MemberProfileInfo*)_members[i],text));
                     }
+                }
 
-                dynamic_cast<Answer*>(_questions.back()->getInteractions().back())->addComment(new Comment(stoi(id),stoul(time),(MemberProfileInfo*)_members[i],text));
                 logout();
+                cout << "answcomment created" << endl;
             }
+
          }
+        for (unsigned long i=0;i<_questions.size();i++){
+           int questionId = _questions[i]->getId();
+           if (questions_closed[questionId]){
+               _questions[i]->setClosed(true);
+           }
+        }
         dataFile.close();
     }
     return true;

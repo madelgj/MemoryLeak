@@ -8,6 +8,8 @@
 #include "Answer.hpp"
 #include <fstream>
 #include <sstream>
+#include <unordered_map>
+
 
 using namespace std;
 
@@ -68,6 +70,7 @@ public:
     // methods to interact with the outside
     bool saveToFile(const string &filename);
     bool loadFromFile(const string &filename);
+
 
 private:
     vector<Member*> _members;

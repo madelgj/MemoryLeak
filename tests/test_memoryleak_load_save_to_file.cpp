@@ -21,6 +21,7 @@
     {
         std::string l;
         std::getline(f, l);
+
         if (l == "Member:")
         {
             //-- Read data
@@ -96,7 +97,7 @@
 
             //-- Check data
             if (id == question.getId() &&
-                //time == question.getTime() &&  //-- This should be uncommented
+                time == question.getTime() &&  //-- This should be uncommented
                 username == question.getAuthor()->getUsername() &&
                 title == question.getTitle() &&
                 description == question.getDescription() &&
@@ -279,7 +280,7 @@
 
 }
 
-::testing::AssertionResult IsQuestionInVector(Question q, std::vector<Question*> v)
+::testing::AssertionResult IsQuestionInVector(Question &q, std::vector<Question*> v)
 {
     bool found = false;
     int i = 0;
@@ -559,7 +560,7 @@ TEST_F(TestMemoryLeakLoadSaveToFile, ApplicationCanLoadState)
 {
     Application manager;
     ASSERT_TRUE(manager.loadFromFile("test_data.dat"));
-
+//ASSERT_TRUE(manager.loadFromFile("test_file.txt"));
     //-- Check members
     ASSERT_TRUE(manager.login(email1, password1));
     Member* current = manager.getCurrentMember();
@@ -600,7 +601,7 @@ TEST_F(TestMemoryLeakLoadSaveToFile, ApplicationCanLoadState)
     q2.decrementVotes();
     Question q3(2, 0, (MemberProfileInfo*)&test_member3, title3, description3, tags3);
     q3.incrementVotes();
-    q3.setClosed(true);
+  //  q3.setClosed(true);
 
     Answer a1(5, 0, (MemberProfileInfo*)&test_member3, answer1_text);
     a1.decrementVotes();
@@ -617,6 +618,7 @@ TEST_F(TestMemoryLeakLoadSaveToFile, ApplicationCanLoadState)
     q1.addInteraction(&a1);
     q1.addInteraction(&a2);
     q3.addInteraction(&a3);
+    q3.setClosed(true);
 
     std::vector<Question*> questions = manager.getQuestions();
     ASSERT_TRUE(IsQuestionInVector(q1, questions));

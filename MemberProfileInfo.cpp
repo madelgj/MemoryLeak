@@ -37,7 +37,7 @@ void MemberProfileInfo::decreaseReputation()
     }
 }
 
-void MemberProfileInfo::increaseReputation()
+void MemberProfileInfo::    increaseReputation()
 {
     _reputation ++;
 }
