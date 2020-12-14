@@ -2,6 +2,8 @@
 #include <vector>
 #include "Application.hpp"
 
+
+
 using namespace std;
 
 int main()
@@ -21,20 +23,21 @@ int main()
 
         ------------------------------------------------------------------------------------------------------------------
 
-        We help you get answers to your toughest coding questions, and find your next dream job.
+        We help you get answers to your toughest coding questions, and find your next dream job!.
 
 )";
 
     Application manager;
     manager.createMember("admin","admin","admin","admin");
+    manager.loadFromFile("..\dataFile.txt");
     int ps=0; //present state of machine
-
     while (ps!=-1) {
         switch (ps) {
         case 0:
             cout<<"Press the following for:\n\n";
-            cout<<"\t 1)Log in\n\t 2)Sign up\n\n";
+            cout<<"\t 1)Log in\n\t 2)Sign up\n\t 3)Search questions by tag\n\t 4)See all questions\n";
             cin>>ps;
+            if (ps==4){ps=5;}
             break;
 
         case 1: //Initial page
@@ -46,9 +49,10 @@ int main()
             cin>>password;
             if(manager.login(email,password)==1){
                 cout<<"Hello!, welcome back" << manager.getCurrentMember()->getUsername() << "\n\n";
-                ps=3;
+                ps=4;
             }
             else{
+                cout << "/a/a/a/a/a/a/a/a/a/a/a";
                 cout<<"Incorrect user or password!!\n\n";
                 ps=1;
             }
@@ -70,36 +74,75 @@ int main()
                 ps=0;
             }
             else{
+                cout << "/a/a/a/a/a/a/a/a/a/a/a";
                 cout<<"Username already exist! \n\n";
                 ps=2;
             }
             break;
         }
 
-       case 3:  //Welcome page
+       case 3: // Show questions by tag
+       {
+           string tags;
+           vector<Question*> QuestionSorted;
+           int id,index;
+           cout << "please introduce the tag of the questions you want to see\n\n";
+           cin >> tags;
+           QuestionSorted = manager.getQuestionsByTag(tags);
+
+           cout<<"Question feed:\n";
+           cout<<" -- Type question id to interact with -- \n\n";
+           for (int  a = 0;  a < QuestionSorted.size(); a++) {
+               cout<<"\tID: "<<QuestionSorted[a]->getId();
+               cout<<"\tTitle: "<<QuestionSorted[a]->getTitle();
+           }
+           cout<<"\n\n";
+           cin>>id;
+
+           for (unsigned long  a = 0;  a < QuestionSorted.size(); a++) {
+               if(id==QuestionSorted[a]->getId()){
+                   index=a;
+                   a=QuestionSorted.size();
+               }
+           }
+
+           if(index!=-1){
+               QuestionSorted[index]->show();
+           }
+
+           else{
+               cout << "/a/a/a/a/a/a/a/a/a/a/a";
+               cout<<"ID does not match\n\n";
+           }
+
+           break;
+
+        }
+       case 4:  //Welcome page
         {
+            manager.ClearScreen();
             cout<<"Press the following for:\n\n";
-            cout<<"\t 1)Newly added questions\n\t 2)Ask a question\n\t 3)Account settings\n\t 4)My Questions\n\n";
+            cout<<"\t 1)Newly added questions\n\t 2)Ask a question\n\t 3)Account settings\n\t 4)My Questions\n\n\t 5)Logout\n\n\t 6)Restore/Create security copy";
             cin>>ps;
             ps+=3;
             break;
         }
 
-        case 4: //Feed page
+        case 5: //Feed page
         {
             int id,index=-1;
 
             cout<<"Question feed:\n";
             cout<<" -- Type question id to interact with -- \n\n";
             vector <Question*> printQ = manager.getQuestions();
-            for (int  a = 0;  a < printQ.size(); a++) {
+            for (unsigned long  a = 0;  a < printQ.size(); a++) {
                 cout<<"\tID: "<<printQ[a]->getId();
                 cout<<"\tTitle: "<<printQ[a]->getTitle();
             }
             cout<<"\n\n";
             cin>>id;
 
-            for (int  a = 0;  a < printQ.size(); a++) {
+            for (unsigned long  a = 0;  a < printQ.size(); a++) {
                 if(id==printQ[a]->getId()){
                     index=a;
                     a=printQ.size();
@@ -117,7 +160,7 @@ int main()
             break;
         }
 
-       case 5:  //Add question page
+       case 6:  //Add question page
         {
             string title, description, tag;
             vector <string> tags;
@@ -135,11 +178,11 @@ int main()
             }
             cout<<"\n";
             manager.createQuestion(title,description,tags);
-            ps = 3;
+            ps = 4;
             break;
         }
 
-        case 6: //Edit account page
+        case 7: //Edit account page
          {
             int edit;
             string username,email,password,bio;
@@ -172,14 +215,68 @@ int main()
                  manager.getCurrentMember()->setBio(bio);
                  break;
              case 5:
-                 ps=3;
+                 ps=4;
                  break;
              }
              break;
          }
+         case 8:
+        {
+            manager.logout();
+            manager.saveToFile("..\dataFile.txt");
+            break;
+        }
+        case 9:
+        {
+            string adminPass;
+            int option;
+            cout << "You have to be an admin to do this. Please, enter the admin password\n\n";
+            cin >> adminPass;
+            if(adminPass == "Inform4tic4Uc3M!"){
+                cout << "Welcome, admin " << manager.getCurrentMember()->getUsername() << "What do you want to do?\n\n\t 1)Create security copy\n\n\t 2)Restore security copy\n\n\t -1)Exit";
+                switch (option) {
+                case 1:
+                {
+                    if( manager.saveToFile("..\CopiadeSeguridad1.txt")){
+                        cout << "Security copy successfully made\n";
+                    } else {
+                        cout << "/a/a/a/a/a/a/a/a/a/a/a";
+                        cout << "File cannot be created\n";
+                    }
+                    ps=4;
+                    break;
+                }
+                case 2:{
+                    string filename;
+                    cout << "Please enter the name of the file you want to restore.Please,be aware you will be logged out";
+                    manager.logout();
+                    if(!manager.loadFromFile(filename)){
+                        cout << "/a/a/a/a/a/a/a/a/a/a/a";
+                        cout << "copy cannot be restored";
+                        ps = 4;
+                    }else{
+                        ps=0;
+                    }
+
+                    break;
+                }
+                case -1:{
+                    ps=4;
+                    break;
+                }
+
+                default:
+                    break;
+                }
+            }
+
+        }
+
 
         default:
-            cout<<"No valid option, please enter again\n\n";
+            cout << "/a/a/a/a/a/a/a/a/a/a/a";
+            cout << "No valid option, please enter again\n\n";
+            ps=0;
         }
     }
 
