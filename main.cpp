@@ -31,6 +31,7 @@ int main()
     manager.createMember("admin","admin","admin","admin");
     manager.loadFromFile("..\dataFile.txt");
     int ps=0; //present state of machine
+    int selectedQuestion;
 
     enum States
     {
@@ -45,6 +46,7 @@ int main()
         logOut,
         backUp,
         myQuestions,
+        feedID,
 
     };
 
@@ -200,22 +202,19 @@ int main()
                 cout<<"\tTitle: "<<printQ[a]->getTitle();
             }
             cout<<"\n\n";
-            cout<<" -- Type question id to interact with -- \n\n";
-            cin>>id;
-
-            for (unsigned long  a = 0;  a < printQ.size(); a++) {
-                if(id==printQ[a]->getId()){
-                    index=a;
-                    a=printQ.size();
+            if(manager.isLogged()==true){
+                cout<<" -- Type question id to interact with -- \n\n";
+                cin>>id;
+                for (unsigned long  a = 0;  a < printQ.size(); a++) {
+                    if(id==printQ[a]->getId()){
+                        selectedQuestion=a;
+                        a=printQ.size();
+                        ps=feed;
+                    }
+                    else{
+                        cout<<"ID does not match\n\n";
+                    }
                 }
-            }
-
-            if(index!=-1){
-                printQ[index]->show();
-            }
-
-            else{
-                cout<<"ID does not match\n\n";
             }
 
             break;
@@ -333,6 +332,40 @@ int main()
             default:
                 break;
             }
+        }
+
+        case feedID:
+        {
+            int option;
+            vector <Question*> printQ = manager.getQuestions();
+            printQ[selectedQuestion]->show();
+            cout<<"Press the following for:\n\n";
+            cout<<"\t 1)Upvote Question\Answer\n\t 2)Downvote Question\Answer\n\t 3)Comment Question\Answer\n";
+            if(manager.getCurrentMember()->getUsername()==printQ[selectedQuestion]->getAuthor()->getUsername()){
+                cout<<"\t 4)Close question\n";
+            }
+            cin>>option;
+
+            switch(option){
+            case 1:
+                cout<<"Enter Question\Answer ID";
+                break;
+            case 2:
+                cout<<"Enter Question\Answer ID";
+                break;
+            case 3:
+                cout<<"Enter Question\Answer ID";
+                break;
+            case 4:
+                if(manager.getCurrentMember()->getUsername()==printQ[selectedQuestion]->getAuthor()->getUsername()){
+                    cout<<"Enter ID of the correct Answer";
+                    break;
+                }
+            default:
+                cout<<"No valid option, please enter again\n\n";
+            }
+
+            break;
         }
 
         default:
