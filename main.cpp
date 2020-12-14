@@ -9,38 +9,75 @@ using namespace std;
 int main()
 {
     cout<< R"(
-        /$$      /$$                                                             /$$                           /$$
-       | $$$    /$$$                                                            | $$                          | $$
-       | $$$$  /$$$$  /$$$$$$  /$$$$$$/$$$$   /$$$$$$   /$$$$$$  /$$   /$$      | $$        /$$$$$$   /$$$$$$ | $$   /$$
-       | $$ $$/$$ $$ /$$__  $$| $$_  $$_  $$ /$$__  $$ /$$__  $$| $$  | $$      | $$       /$$__  $$ |____  $$| $$  /$$/
-       | $$  $$$| $$| $$$$$$$$| $$ \ $$ \ $$| $$  \ $$| $$  \__/| $$  | $$      | $$      | $$$$$$$$  /$$$$$$$| $$$$$$/
-       | $$\  $ | $$| $$_____/| $$ | $$ | $$| $$  | $$| $$      | $$  | $$      | $$      | $$_____/ /$$__  $$| $$_  $$
-       | $$ \/  | $$|  $$$$$$$| $$ | $$ | $$|  $$$$$$/| $$      |  $$$$$$$      | $$$$$$$$|  $$$$$$$|  $$$$$$$| $$ \  $$
-       |__/     |__/ \_______/|__/ |__/ |__/ \______/ |__/       \____  $$      |________/ \_______/ \_______/|__/  \__/
-                                                                 /$$  | $$
-                                                                |  $$$$$$/
-                                                                 \______/
+           /$$      /$$                                                             /$$                           /$$
+           | $$$    /$$$                                                            | $$                          | $$
+           | $$$$  /$$$$  /$$$$$$  /$$$$$$/$$$$   /$$$$$$   /$$$$$$  /$$   /$$      | $$        /$$$$$$   /$$$$$$ | $$   /$$
+           | $$ $$/$$ $$ /$$__  $$| $$_  $$_  $$ /$$__  $$ /$$__  $$| $$  | $$      | $$       /$$__  $$ |____  $$| $$  /$$/
+           | $$  $$$| $$| $$$$$$$$| $$ \ $$ \ $$| $$  \ $$| $$  \__/| $$  | $$      | $$      | $$$$$$$$  /$$$$$$$| $$$$$$/
+           | $$\  $ | $$| $$_____/| $$ | $$ | $$| $$  | $$| $$      | $$  | $$      | $$      | $$_____/ /$$__  $$| $$_  $$
+           | $$ \/  | $$|  $$$$$$$| $$ | $$ | $$|  $$$$$$/| $$      |  $$$$$$$      | $$$$$$$$|  $$$$$$$|  $$$$$$$| $$ \  $$
+           |__/     |__/ \_______/|__/ |__/ |__/ \______/ |__/       \____  $$      |________/ \_______/ \_______/|__/  \__/
+           /$$  | $$
+           |  $$$$$$/
+           \______/
 
-        ------------------------------------------------------------------------------------------------------------------
+           ------------------------------------------------------------------------------------------------------------------
 
-        We help you get answers to your toughest coding questions, and find your next dream job!.
+           We help you get answers to your toughest coding questions, and find your next dream job!.
 
-)";
+           )";
 
     Application manager;
     manager.createMember("admin","admin","admin","admin");
     manager.loadFromFile("..\dataFile.txt");
     int ps=0; //present state of machine
-    while (ps!=-1) {
-        switch (ps) {
-        case 0:
+
+    enum States
+    {
+        initial,
+        logIn,
+        signIn,
+        showTag,
+        welcome,
+        feed,
+        addQuestion,
+        editAccount,
+        logOut,
+        backUp,
+        myQuestions,
+
+    };
+
+    while (ps!=-2) {
+        switch (ps)
+        {
+
+        case initial: //Initial page
             cout<<"Press the following for:\n\n";
             cout<<"\t 1)Log in\n\t 2)Sign up\n\t 3)Search questions by tag\n\t 4)See all questions\n";
             cin>>ps;
-            if (ps==4){ps=5;}
+
+            switch(ps){
+            case 1:
+                ps=logIn;
+                break;
+            case 2:
+                ps=signIn;
+                break;
+            case 3:
+                ps=showTag;
+                break;
+            case 4:
+                ps=feed;
+                break;
+            default:
+                ps=initial;
+                cout<<"No valid option, please enter again\n\n";
+            }
+
             break;
 
-        case 1: //Initial page
+        case logIn: //Log in
         {
             string email, password;
             cout<<"Please enter your email:\n";
@@ -48,18 +85,17 @@ int main()
             cout<<"Please enter your password:\n";
             cin>>password;
             if(manager.login(email,password)==1){
-                cout<<"Hello!, welcome back" << manager.getCurrentMember()->getUsername() << "\n\n";
-                ps=4;
+                cout<<"Hello!, welcome back " << manager.getCurrentMember()->getUsername() << "\n\n";
+                ps=welcome;
             }
             else{
-                cout << "/a/a/a/a/a/a/a/a/a/a/a";
                 cout<<"Incorrect user or password!!\n\n";
-                ps=1;
+                ps=logIn;
             }
             break;
         }
 
-        case 2: //Sign in page
+        case signIn: //Sign in page
         {
             string user, password, email;
             cout<<"Please enter your desired username:\n\n";
@@ -71,75 +107,100 @@ int main()
             if(manager.createMember(user,"Empty field",email,password) == 1){
                 cout<<"Congrats, your ccount has been successfully created!!\n";
                 cout<<"Please remember to complete your bio in settings once you log in\n\n";
-                ps=0;
+                ps=initial;
             }
             else{
-                cout << "/a/a/a/a/a/a/a/a/a/a/a";
-                cout<<"Username already exist! \n\n";
-                ps=2;
+                cout<<"Username already exist! Please try again\n\n";
+                ps=signIn;
             }
             break;
         }
 
-       case 3: // Show questions by tag
-       {
-           string tags;
-           vector<Question*> QuestionSorted;
-           int id,index;
-           cout << "please introduce the tag of the questions you want to see\n\n";
-           cin >> tags;
-           QuestionSorted = manager.getQuestionsByTag(tags);
+        case showTag: // Show questions by tag
+        {
+            string tags;
+            vector<Question*> QuestionSorted;
+            int id,index;
+            cout << "please introduce the tag of the questions you want to see\n\n";
+            cin >> tags;
+            QuestionSorted = manager.getQuestionsByTag(tags);
 
-           cout<<"Question feed:\n";
-           cout<<" -- Type question id to interact with -- \n\n";
-           for (int  a = 0;  a < QuestionSorted.size(); a++) {
-               cout<<"\tID: "<<QuestionSorted[a]->getId();
-               cout<<"\tTitle: "<<QuestionSorted[a]->getTitle();
-           }
-           cout<<"\n\n";
-           cin>>id;
+            cout<<"Question feed:\n";
+            cout<<" -- Type question id to interact with -- \n\n";
+            for (int  a = 0;  a < QuestionSorted.size(); a++) {
+                cout<<"\tID: "<<QuestionSorted[a]->getId();
+                cout<<"\tTitle: "<<QuestionSorted[a]->getTitle();
+            }
+            cout<<"\n\n";
+            cin>>id;
 
-           for (unsigned long  a = 0;  a < QuestionSorted.size(); a++) {
-               if(id==QuestionSorted[a]->getId()){
-                   index=a;
-                   a=QuestionSorted.size();
-               }
-           }
+            for (unsigned long  a = 0;  a < QuestionSorted.size(); a++) {
+                if(id==QuestionSorted[a]->getId()){
+                    index=a;
+                    a=QuestionSorted.size();
+                }
+            }
 
-           if(index!=-1){
-               QuestionSorted[index]->show();
-           }
+            if(index!=-1){
+                QuestionSorted[index]->show();
+            }
 
-           else{
-               cout << "/a/a/a/a/a/a/a/a/a/a/a";
-               cout<<"ID does not match\n\n";
-           }
+            else{
+                cout<<"ID does not match\n\n";
+            }
 
-           break;
+            break;
 
         }
-       case 4:  //Welcome page
+
+        case welcome:  //Welcome page
         {
-            manager.ClearScreen();
             cout<<"Press the following for:\n\n";
-            cout<<"\t 1)Newly added questions\n\t 2)Ask a question\n\t 3)Account settings\n\t 4)My Questions\n\n\t 5)Logout\n\n\t 6)Restore/Create security copy";
+            cout<<"\t 1)Newly added questions\n\t 2)Ask a question\n\t 3)Account settings\n\t 4)My Questions\n\t 5)Logout\n";
+            if(manager.getCurrentMember()->getUsername()=="admin"){
+                cout<<"\t 6)Backup settings\n";
+            }
             cin>>ps;
-            ps+=3;
+            switch(ps){
+            case 1:
+                ps=feed;
+                break;
+            case 2:
+                ps=addQuestion;
+                break;
+            case 3:
+                ps=editAccount;
+                break;
+            case 4:
+                ps=myQuestions;
+                break;
+            case 5:
+                ps=logOut;
+                break;
+            case 6:
+                if(manager.getCurrentMember()->getUsername()=="admin"){
+                    ps=backUp;
+                    break;
+                }
+            default:
+                ps=welcome;
+                cout<<"No valid option, please enter again\n\n";
+            }
             break;
         }
 
-        case 5: //Feed page
+        case feed: //Feed page
         {
             int id,index=-1;
 
             cout<<"Question feed:\n";
-            cout<<" -- Type question id to interact with -- \n\n";
             vector <Question*> printQ = manager.getQuestions();
             for (unsigned long  a = 0;  a < printQ.size(); a++) {
                 cout<<"\tID: "<<printQ[a]->getId();
                 cout<<"\tTitle: "<<printQ[a]->getTitle();
             }
             cout<<"\n\n";
+            cout<<" -- Type question id to interact with -- \n\n";
             cin>>id;
 
             for (unsigned long  a = 0;  a < printQ.size(); a++) {
@@ -160,7 +221,7 @@ int main()
             break;
         }
 
-       case 6:  //Add question page
+        case addQuestion:  //Add question page
         {
             string title, description, tag;
             vector <string> tags;
@@ -178,106 +239,108 @@ int main()
             }
             cout<<"\n";
             manager.createQuestion(title,description,tags);
-            ps = 4;
+            ps = welcome;
             break;
         }
 
-        case 7: //Edit account page
-         {
+        case editAccount: //Edit account page
+        {
             int edit;
             string username,email,password,bio;
-             cout<<"Press the following to edit:\n\n";
-             cout<<"\t1)Username: "<<manager.getCurrentMember()->getUsername()<<"\n";
-             cout<<"\t2)Email: "<<manager.getCurrentMember()->getEmail()<<"\n";
-             cout<<"\t3)Password "<<manager.getCurrentMember()->getPassword()<<"\n";
-             cout<<"\t4)Bio: "<<manager.getCurrentMember()->getBio()<<"\n";
-             cout<<"\t5)Go back to main menu\n\n";
-             cin>>edit;
-             switch(edit){
-             case 1:
-                 cout<<"Enter your new username\n";
-                 cin>>username;
-                 manager.getCurrentMember()->setUsername(username);
-                 break;
-             case 2:
-                 cout<<"Enter your new email\n";
-                 cin>>email;
-                 manager.getCurrentMember()->setEmail(email);
-                 break;
-             case 3:
-                 cout<<"Enter your new password\n";
-                 cin>>password;
-                 manager.getCurrentMember()->setPassword(password);
-                 break;
-             case 4:
-                 cout<<"Enter your new bio\n";
-                 cin>>bio;
-                 manager.getCurrentMember()->setBio(bio);
-                 break;
-             case 5:
-                 ps=4;
-                 break;
-             }
-             break;
-         }
-         case 8:
+            cout<<"Press the following to edit:\n\n";
+            cout<<"\t1)Username: "<<manager.getCurrentMember()->getUsername()<<"\n";
+            cout<<"\t2)Email: "<<manager.getCurrentMember()->getEmail()<<"\n";
+            cout<<"\t3)Password "<<manager.getCurrentMember()->getPassword()<<"\n";
+            cout<<"\t4)Bio: "<<manager.getCurrentMember()->getBio()<<"\n";
+            cout<<"\t5)Go back to main menu\n\n";
+            cin>>edit;
+            switch(edit){
+            case 1:
+                cout<<"Enter your new username\n";
+                cin>>username;
+                manager.getCurrentMember()->setUsername(username);
+                break;
+            case 2:
+                cout<<"Enter your new email\n";
+                cin>>email;
+                manager.getCurrentMember()->setEmail(email);
+                break;
+            case 3:
+                cout<<"Enter your new password\n";
+                cin>>password;
+                manager.getCurrentMember()->setPassword(password);
+                break;
+            case 4:
+                cout<<"Enter your new bio\n";
+                cin>>bio;
+                manager.getCurrentMember()->setBio(bio);
+                break;
+            case 5:
+                ps=welcome;
+                break;
+            }
+            break;
+        }
+
+        case myQuestions: //My questions page
+        {
+
+        }
+
+        case logOut:    //Logout
         {
             manager.logout();
             manager.saveToFile("..\dataFile.txt");
+            ps=initial;
             break;
         }
-        case 9:
+
+        case backUp: //Backup page
         {
-            string adminPass;
             int option;
-            cout << "You have to be an admin to do this. Please, enter the admin password\n\n";
-            cin >> adminPass;
-            if(adminPass == "Inform4tic4Uc3M!"){
-                cout << "Welcome, admin " << manager.getCurrentMember()->getUsername() << "What do you want to do?\n\n\t 1)Create security copy\n\n\t 2)Restore security copy\n\n\t -1)Exit";
-                switch (option) {
-                case 1:
-                {
-                    if( manager.saveToFile("..\CopiadeSeguridad1.txt")){
-                        cout << "Security copy successfully made\n";
-                    } else {
-                        cout << "/a/a/a/a/a/a/a/a/a/a/a";
-                        cout << "File cannot be created\n";
-                    }
-                    ps=4;
-                    break;
+            cout<<"What do you want to do?\n\n\t 1)Create security copy\n\n\t 2)Restore security copy\n\n\t -1)Exit";
+            cin>>option;
+            switch (option) {
+            case 1:
+            {
+                if( manager.saveToFile("..\CopiadeSeguridad1.txt")){
+                    cout << "Security copy successfully made\n";
+                } else {
+                    cout << "File cannot be created\n";
                 }
-                case 2:{
-                    string filename;
-                    cout << "Please enter the name of the file you want to restore.Please,be aware you will be logged out";
-                    manager.logout();
-                    if(!manager.loadFromFile(filename)){
-                        cout << "/a/a/a/a/a/a/a/a/a/a/a";
-                        cout << "copy cannot be restored";
-                        ps = 4;
-                    }else{
-                        ps=0;
-                    }
-
-                    break;
+                ps=4;
+                break;
+            }
+            case 2:{
+                string filename;
+                cout << "Please enter the name of the file you want to restore. Please,be aware you will be logged out\n";
+                manager.logout();
+                if(!manager.loadFromFile(filename)){
+                    cout << "copy cannot be restored";
+                    ps = welcome;
                 }
-                case -1:{
-                    ps=4;
-                    break;
+                else{
+                    ps=initial;
                 }
 
-                default:
-                    break;
-                }
+                break;
+            }
+            case -1:{
+                ps=welcome;
+                break;
             }
 
+            default:
+                break;
+            }
         }
-
 
         default:
-            cout << "/a/a/a/a/a/a/a/a/a/a/a";
-            cout << "No valid option, please enter again\n\n";
-            ps=0;
+            cout << "Error 404, redirecting to home page\n\n";
+            ps=initial;
         }
+
+
     }
 
     return 0;

@@ -158,7 +158,9 @@ bool Application::createQuestion(const string &title, const string &description,
     //funcion q devuelva un vector de id de todas las question o answer o comments
     // setMasterId para meter id de la pregunta/respuesta a la q corresponda
 
-    unsigned long time = 10; //how to set time? I think we can set a random value
+    unsigned long time; //how to set time? I think we can set a random value
+    ctime(&_timer);
+    time=_timer;
     _questions.push_back(new Question(_id,time,(MemberProfileInfo*)getCurrentMember(),title,description,tags));
     return true;
 }
@@ -174,7 +176,9 @@ bool Application::answerQuestion(const int &idQuestion, const string &answerText
         return false;
     } else {
         if(!_questions[questionIndex]->getClosed()){
-            unsigned long time = 10;
+            unsigned long time;
+            ctime(&_timer);
+            time=_timer;
             _id++;
             _questions[questionIndex]->addInteraction(new Answer(_id,time,(MemberProfileInfo*)getCurrentMember(),answerText));
             return true;
@@ -188,7 +192,9 @@ bool Application::comment(const int &idQA, const string &commentText)
     if (!isLogged()){
         return false;
     }
-    unsigned long time = 10;
+    unsigned long time; //how to set time? I think we can set a random value
+    ctime(&_timer);
+    time=_timer;
     int questionIndex = questionExists(idQA);
     // the id corresponds to a question
     if (questionIndex != -1){

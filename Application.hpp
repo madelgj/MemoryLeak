@@ -79,6 +79,7 @@ private:
     int _id;
     int _currentMember;
     vector<Question*> _questions;
+    time_t _timer;
 };
 
 #endif // APPLICATION_HPP
