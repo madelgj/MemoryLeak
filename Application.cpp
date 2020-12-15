@@ -17,12 +17,12 @@ Application::~Application()
 bool Application::createMember(string username, string bio, string email, string password)
 {
     for(unsigned long a=0; a<_members.size(); a++){
-        if(_members[a]->getEmail()==email){
+        if(_members[a]->getEmail()==email){ //we check if the email already exists
             return false;
         }
     }
     for(unsigned long a=0; a<_members.size(); a++){
-        if(_members[a]->getUsername()==username){
+        if(_members[a]->getUsername()==username){ // we check if the username already exists
             return false;
         }
     }
@@ -45,7 +45,7 @@ bool Application::login(string email, string password)
 
 bool Application::isLogged()
 {
-    if(_currentMember==-1){
+    if(_currentMember==-1){ // current member = -1 corresponds to no one logged
         return false;
     }
     return true;
@@ -82,7 +82,7 @@ bool Application::eraseCurrentMember()
 
 vector <MemberProfileInfo*> Application::showMembers()
 {
-    vector<MemberProfileInfo*> users;    //vector que guarda los datos que queremos obtener
+    vector<MemberProfileInfo*> users;    //vector that stores the data we want to send
 
     for (unsigned long i = 0; i < _members.size(); i++) {
         users.push_back((MemberProfileInfo*) _members[i]);
@@ -95,7 +95,7 @@ MemberProfileInfo* Application::showMember(string user)
     MemberProfileInfo* profile;
     profile=NULL;
     for (unsigned long a = 0; a < _members.size(); a++) {
-        if(_members[a]->getUsername()==user){
+        if(_members[a]->getUsername()==user){ // we check if the user exists
             profile=(MemberProfileInfo*)_members[a];
         }
     }
@@ -154,11 +154,7 @@ bool Application::createQuestion(const string &title, const string &description,
         return false;
     }
     _id++;
-    //map --> vector de pares
-    //funcion q devuelva un vector de id de todas las question o answer o comments
-    // setMasterId para meter id de la pregunta/respuesta a la q corresponda
-
-    unsigned long time; //how to set time? I think we can set a random value
+    unsigned long time; 
     ctime(&_timer);
     time=_timer;
     _questions.push_back(new Question(_id,time,(MemberProfileInfo*)getCurrentMember(),title,description,tags));
@@ -192,7 +188,7 @@ bool Application::comment(const int &idQA, const string &commentText)
     if (!isLogged()){
         return false;
     }
-    unsigned long time; //how to set time? I think we can set a random value
+    unsigned long time;
     ctime(&_timer);
     time=_timer;
     int questionIndex = questionExists(idQA);
@@ -203,10 +199,10 @@ bool Application::comment(const int &idQA, const string &commentText)
         return true;
     }
 
-    Interaction* answerToComment = interactionExists(idQA);
+    Interaction* answerToComment = interactionExists(idQA); // we check if an interaction with that id exists
     if(answerToComment!=nullptr){
 
-        if(dynamic_cast <Answer*> (answerToComment) != nullptr){
+        if(dynamic_cast <Answer*> (answerToComment) != nullptr){ // we check if its an answer
             Answer* targetAnswer = dynamic_cast<Answer*>(answerToComment);
             _id++;
             targetAnswer->addComment(new Comment(_id,time,(MemberProfileInfo*)getCurrentMember(),commentText));
@@ -223,7 +219,7 @@ bool Application::closeQuestion(const int &idQuestion)
     if (!isLogged()){
         return false;
     }
-    int questionIndex = questionExists(idQuestion);
+    int questionIndex = questionExists(idQuestion); 
     if (questionIndex == -1){
         return false;
     } else{
@@ -285,7 +281,7 @@ bool Application::upvoteAnswer(const int &idAnswer)
     Interaction* answerToVote = interactionExists(idAnswer);
     if (answerToVote != nullptr && answerToVote->getTyp()=="Answer"){
         Answer* targetAnswer = (Answer*) answerToVote;
-        if(_members[_currentMember]->hasDownvoted(idAnswer)){
+        if(_members[_currentMember]->hasDownvoted(idAnswer)){ // we check if it has downvoted and if so, we change the vote to the other vector
             _members[_currentMember]->removeDownvoted(idAnswer);
             targetAnswer->incrementVotes();
         }
@@ -303,15 +299,15 @@ bool Application::downvoteAnswer(const int &idAnswer)
     if (!isLogged()){
         return false;
     }
-    if(_members[_currentMember]->hasDownvoted(idAnswer)){
+    if(_members[_currentMember]->hasDownvoted(idAnswer)){ // we check if the member has already downvoted the question
         return false;
     }
 
-    Interaction* answerToVote = interactionExists(idAnswer);
+    Interaction* answerToVote = interactionExists(idAnswer); 
     // we check if the answer exists
     if (answerToVote != nullptr && answerToVote->getTyp()=="Answer"){
         Answer* targetAnswer = (Answer*) answerToVote;
-        if(_members[_currentMember]->hasUpvoted(idAnswer)){
+        if(_members[_currentMember]->hasUpvoted(idAnswer)){ // we check if the member has already upvoted the question and if so, we change it to the other vector
             _members[_currentMember]->removeUpvoted(idAnswer);
             targetAnswer->decrementVotes();
         }
@@ -409,7 +405,7 @@ bool Application::deleteInteraction(const int &idInteraction)
             if(delInt[b]->getTyp()=="Answer"){//if the interaction is an answer, we check for all comments inside
                 vector <Comment*> delCom = dynamic_cast <Answer*> (delInt[b])->getComments();
                 for (int c = 0; c < delCom.size(); c++){
-                    if((delCom[c]->getId() == idInteraction) && (delCom[c]->getAuthor() == _members[_currentMember])){
+                    if((delCom[c]->getId() == idInteraction) && (delCom[c]->getAuthor() == _members[_currentMember])){ // we check if the interaction is a comment and if the current member is the author
                         dynamic_cast<Answer*>(_questions[a]->getInteractions().at(b))->removeComment(idInteraction);
                         return true;
                     }
@@ -516,11 +512,7 @@ bool Application::saveToFile(const string &filename)
             dataFile << _questions[i]->getTitle() << '\n';
             dataFile << _questions[i]->getDescription() << '\n';
             tagsToSave =  _questions[i]->getTags();
-          //  dataFile << tagsToSave[0];
             dataFile << _questions[i]->getTags()[0];
-//            for (unsigned long j=1;j<tagsToSave.size();j++){
-//                dataFile << "," << tagsToSave[j];
-//            }
             for(unsigned long j=1;j<_questions[i]->getTags().size();j++){
                 dataFile << ","<< _questions[i]->getTags()[j];
             }
@@ -561,7 +553,7 @@ bool Application::saveToFile(const string &filename)
                     }
 
                 }else{
-
+                    // we save the info of all other comments
                     commentToSave = dynamic_cast<Comment*>(interacciones[k]);
                     if(commentToSave!= nullptr){
                         dataFile << "Comment:" << '\n';
@@ -589,6 +581,7 @@ bool Application::loadFromFile(const string &filename)
 
         while(getline(dataFile,currentLine)){
             if(currentLine == "Member:"){
+                // we get the info of all members
                 getline(dataFile,username);
                 getline(dataFile,bio);
                 getline(dataFile,email);
@@ -601,10 +594,9 @@ bool Application::loadFromFile(const string &filename)
             }
 
             if(currentLine == "Question:"){
-                cout << "Creating a question: " <<  endl;
+                // we get the info of the question
                 tags.clear();
                 getline(dataFile,id);
-                cout << "question id: "<< id << endl;
                 getline(dataFile,title);
                 getline(dataFile,description);
                 getline(dataFile,tag);
@@ -634,7 +626,7 @@ bool Application::loadFromFile(const string &filename)
                 _questions.back()->setId(stoi(id));
                 _questions.back()->setTime(stoul(time));
                 _questions.back()->setClosed(false);
-                if(closed=="0"){ // the question is still open
+                if(closed=="0"){ // the question is always still open so we can introduce the interactions it might have
                     questions_closed[stoi(id)] = false;
                 }else{
                     questions_closed[stoi(id)] = true;
@@ -653,6 +645,7 @@ bool Application::loadFromFile(const string &filename)
 
             }
             if(currentLine == "Answer:"){
+                // we get all the info of the answer
                 getline(dataFile,id);
                 getline(dataFile,time);
                 getline(dataFile,username);
@@ -668,7 +661,6 @@ bool Application::loadFromFile(const string &filename)
                 dynamic_cast<Answer*>(_questions.back()->getInteractions().back())->setId(stoi(id));
                 dynamic_cast<Answer*>(_questions.back()->getInteractions().back())->setTime(stoul(time));
 
-                //dynamic_cast<Answer*>(_questions.back()->getInteractions().back())->getAuthor()->setUsername(username);
                 if(rightAnswer == "0"){
                     dynamic_cast<Answer*>(_questions.back()->getInteractions().back())->setRightAnswer(false);
                 } else{
@@ -685,13 +677,12 @@ bool Application::loadFromFile(const string &filename)
                 }
 
                 logout();
-                cout << "answer created"<<  endl;
 
             }
 
 
             if(currentLine == "Comment:"){
-                cout << "ccreating comment"<< endl;
+                // we get all the info of the comments
                 getline(dataFile,id);
                 getline(dataFile,time);
                 getline(dataFile,username);
@@ -706,11 +697,10 @@ bool Application::loadFromFile(const string &filename)
                 dynamic_cast<Comment*>(_questions.back()->getInteractions().back())->setId(stoi(id));
                 dynamic_cast<Comment*>(_questions.back()->getInteractions().back())->getAuthor()->setUsername(username);
                 logout();
-                cout << "comment created"<<endl;
             }
 
             if(currentLine == "AnsComment:"){
-                cout << "creating answcoment"<< endl;
+                // we get all the info of the anscomments
                 getline(dataFile,id);
                 getline(dataFile,time);
                 getline(dataFile,username);
@@ -721,12 +711,11 @@ bool Application::loadFromFile(const string &filename)
                         dynamic_cast<Answer*>(_questions.back()->getInteractions().back())->addComment(new Comment(stoi(id),stoul(time),(MemberProfileInfo*)_members[i],text));
                     }
                 }
-
                 logout();
-                cout << "answcomment created" << endl;
             }
 
          }
+        // we closed the questions that are needed to be closed
         for (unsigned long i=0;i<_questions.size();i++){
            int questionId = _questions[i]->getId();
            if (questions_closed[questionId]){
@@ -744,7 +733,7 @@ void Application::ClearScreen()
 }
 
 bool Application::checkPassword(string &password)
-{
+{ // we check if the minimum requirements are met
     bool capital, sign=false, number;
     for(int a=65; a <= 90; a++){
         char found = a;
