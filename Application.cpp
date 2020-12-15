@@ -743,4 +743,30 @@ void Application::ClearScreen()
     cout << string( 100, '\n' );
 }
 
+bool Application::checkPassword(string &password)
+{
+    bool capital, sign, number;
+    for(int a=65; a <= 90; a++){
+        char found = a;
+        if(password.find(found)!=-1){ capital=true;}
+    }
+    for(int a=58; a <= 64; a++){
+        char found = a;
+        if(password.find(found)!=-1){ sign=true;}
+    }
+    for(int a=33; a <= 47; a++){
+        char found = a;
+        if(password.find(found)!=-1){ sign=true;}
+    }
+    for(int a=91; a <= 95; a++){
+        char found = a;
+        if(password.find(found)!=-1){ sign=true;}
+    }
+    for(int a=0; a <= 9; a++){
+        char found = a;
+        if(password.find(found)!=-1){ number=true;}
+    }
+    if(capital && sign && number){return true;}
 
+    return false;
+}

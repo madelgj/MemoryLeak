@@ -32,6 +32,7 @@ public:
     bool editPassword(string const password);
     bool editUsername(string const username);
     bool editBio(string const bio);
+    bool checkPassword(string &password);
 
 // methods regarding the interactions
 

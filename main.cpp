@@ -17,9 +17,9 @@ int main()
            | $$\  $ | $$| $$_____/| $$ | $$ | $$| $$  | $$| $$      | $$  | $$      | $$      | $$_____/ /$$__  $$| $$_  $$
            | $$ \/  | $$|  $$$$$$$| $$ | $$ | $$|  $$$$$$/| $$      |  $$$$$$$      | $$$$$$$$|  $$$$$$$|  $$$$$$$| $$ \  $$
            |__/     |__/ \_______/|__/ |__/ |__/ \______/ |__/       \____  $$      |________/ \_______/ \_______/|__/  \__/
-                                                                     /$$  | $$
-                                                                    |  $$$$$$/
-                                                                     \______/
+           /$$  | $$
+           |  $$$$$$/
+           \______/
 
            ------------------------------------------------------------------------------------------------------------------
 
@@ -29,7 +29,7 @@ int main()
 
     Application manager;
     manager.createMember("admin","admin","admin","admin");
-    manager.loadFromFile("..\dataFile.txt");
+    manager.loadFromFile("dataFile.txt");
     int ps=0; //present state of machine
     int selectedQuestion;
 
@@ -104,15 +104,15 @@ int main()
             cin>>user;
             cout<<"Please enter your email:\n\n";
             cin>>email;
-            cout<<"Please enter your desired password:\n\n";
+            cout<<"Please enter your desired password, it must contain at least a capital letter, a number and a special character:\n\n";
             cin>>password;
-            if(manager.createMember(user,"Empty field",email,password) == 1){
+            if(manager.createMember(user,"Empty field",email,password) == 1 && manager.checkPassword(password)){
                 cout<<"Congrats, your ccount has been successfully created!!\n";
                 cout<<"Please remember to complete your bio in settings once you log in\n\n";
                 ps=initial;
             }
             else{
-                cout<<"Username already exist! Please try again\n\n";
+                cout<<"Username already exist or password is incomplete! Please try again\n\n";
                 ps=signIn;
             }
             break;
@@ -270,8 +270,13 @@ int main()
                 manager.getCurrentMember()->setEmail(email);
                 break;
             case 3:
-                cout<<"Enter your new password\n";
+                cout<<"Please enter your new password, it must contain at least a capital letter, a number and a special character:\n\n";
                 cin>>password;
+                if(manager.checkPassword(password)!=1){
+                    cout<<"The entered password does not contain all the required fields\n\n";
+                    ps=editAccount;
+                    break;
+                }
                 manager.getCurrentMember()->setPassword(password);
                 break;
             case 4:
@@ -286,7 +291,7 @@ int main()
             break;
         }
 
-        case myQuestions: //My questions page
+        case myQuestions: //My questions page, we didn have time to implement this page
         {
 
         }
@@ -294,7 +299,7 @@ int main()
         case logOut:    //Logout
         {
             manager.logout();
-            manager.saveToFile("..\dataFile.txt");
+            manager.saveToFile("dataFile.txt");
             ps=initial;
             break;
         }
@@ -302,12 +307,12 @@ int main()
         case backUp: //Backup page
         {
             int option;
-            cout<<"What do you want to do?\n\n\t 1)Create security copy\n\n\t 2)Restore security copy\n\n\t -1)Exit";
+            cout<<"What do you want to do?\n\n\t 1)Create security copy\n\n\t 2)Restore security copy\n\n\t -1)Exit\n\n";
             cin>>option;
             switch (option) {
             case 1:
             {
-                if( manager.saveToFile("..\CopiadeSeguridad1.txt")){
+                if( manager.saveToFile("CopiadeSeguridad1.txt")){
                     cout << "Security copy successfully made\n";
                 } else {
                     cout << "File cannot be created\n";
@@ -324,13 +329,13 @@ int main()
                     ps = welcome;
                 }
                 else{
-                    ps=initial;
+                    ps = initial;
                 }
 
                 break;
             }
             case -1:{
-                ps=welcome;
+                ps = welcome;
                 break;
             }
 
@@ -345,7 +350,7 @@ int main()
             vector <Question*> printQ = manager.getQuestions();
             printQ[selectedQuestion]->show();
             cout<<"Press the following for:\n\n";
-            cout<<"\t 1)Upvote Question\Answer\n\t 2)Downvote Question\Answer\n\t 3)Comment Question\Answer\n";
+            cout<<"\t 1)Upvote Question|Answer\n\t 2)Downvote Question|Answer\n\t 3)Comment Question|Answer\n";
             if(manager.getCurrentMember()->getUsername()==printQ[selectedQuestion]->getAuthor()->getUsername()){
                 cout<<"\t 4)Close question\n";
             }
@@ -353,33 +358,101 @@ int main()
 
             switch(option){
             case 1:
-                cout<<"Enter Question\Answer ID";
-                break;
-            case 2:
-                cout<<"Enter Question\Answer ID";
-                break;
-            case 3:
-                cout<<"Enter Question\Answer ID";
-                break;
-            case 4:
-                if(manager.getCurrentMember()->getUsername()==printQ[selectedQuestion]->getAuthor()->getUsername()){
-                    cout<<"Enter ID of the correct Answer";
+            {
+                int id;
+                cout<<"Enter Question|Answer ID";
+                cin>>id;
+                vector <Interaction*> interactions = printQ[selectedQuestion]->getInteractions();
+                if (printQ[selectedQuestion]->getId() == id){
+                    printQ[selectedQuestion]->incrementVotes();
+                    ps=feedID;
                     break;
                 }
-            default:
-                cout<<"No valid option, please enter again\n\n";
-            }
 
-            break;
+                for(int a=0; a<interactions.size(); a++){
+                    if(dynamic_cast <Answer*> (interactions[a])!= NULL && interactions[a]->getId()==id){
+                        dynamic_cast <Answer*> (interactions[a])->incrementVotes();
+                        ps=feedID;
+                        break;
+                    }
+                }
+                cout<<"ID does not match any answer or question\n\n";
+                break;
+            }
+            case 2:
+            {
+                int id;
+                cout<<"Enter Question|Answer ID";
+                cin>>id;
+                vector <Interaction*> interactions = printQ[selectedQuestion]->getInteractions();
+                if (printQ[selectedQuestion]->getId() == id){
+                    printQ[selectedQuestion]->decrementVotes();
+                    ps=feedID;
+                    break;
+                }
+
+                for(int a=0; a<interactions.size(); a++){
+                    if(dynamic_cast <Answer*> (interactions[a])!= NULL && interactions[a]->getId()==id){
+                        dynamic_cast <Answer*> (interactions[a])->decrementVotes();
+                        ps=feedID;
+                        break;
+                    }
+                }
+                cout<<"ID does not match any answer or question\n\n";
+                break;
+            }
+            case 3:
+            {
+                int id;
+                cout<<"Enter Question|Answer ID";
+                cin>>id;
+                vector <Interaction*> interactions = printQ[selectedQuestion]->getInteractions();
+                if (printQ[selectedQuestion]->getId() == id){
+                    string comment;
+                    cout<<"Please enter text to comment\n\n";
+                    cin>>comment;
+                    manager.comment(id,comment);
+                    ps=feedID;
+                    break;
+                }
+
+                for(int a=0; a<interactions.size(); a++){
+                    if(dynamic_cast <Answer*> (interactions[a])!= NULL && interactions[a]->getId()==id){
+                        string comment;
+                        cout<<"Please enter text to comment\n\n";
+                        cin>>comment;
+                        manager.comment(id,comment);
+                        ps=feedID;
+                        break;
+                    }
+                }
+                cout<<"ID does not match any answer or question\n\n";
+                break;
+            }
+            case 4:
+            {
+                int id;
+                cout<<"Enter Question|Answer ID";
+                cin>>id;
+                vector <Interaction*> interactions = printQ[selectedQuestion]->getInteractions();
+
+                for(int a=0; a<interactions.size(); a++){
+                    if(dynamic_cast <Answer*> (interactions[a])!= NULL && interactions[a]->getId()==id){
+                        dynamic_cast <Answer*> (interactions[a])->setRightAnswer(true);
+                        printQ[selectedQuestion]->setClosed(true);
+                        break;
+                    }
+                }
+                cout<<"ID does not match any answer or question\n\n";
+                break;
+            }
+          }
         }
 
         default:
             cout << "Error 404, redirecting to home page\n\n";
             ps=initial;
         }
-
-
     }
-
     return 0;
 }
