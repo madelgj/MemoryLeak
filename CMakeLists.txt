@@ -1,50 +1,24 @@
-cmake_minimum_required(VERSION 2.8)
+add_executable(test_memoryleak_member test_memoryleak_member.cpp)
+target_link_libraries(test_memoryleak_member gtest_main MemoryLeakLib)
+add_test(NAME test_memoryleak_member COMMAND test_memoryleak_member)
 
-project(Memory_Leak)
+# Comenta este bloque para ignorar este test
+add_executable(test_memoryleak_application_basic test_memoryleak_application_basic.cpp)
+target_link_libraries(test_memoryleak_application_basic gtest_main MemoryLeakLib)
+add_test(NAME test_memoryleak_application_basic COMMAND test_memoryleak_application_basic)
 
-# Add debug info
-set(CMAKE_BUILD_TYPE Debug)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-set(CMAKE_CXX_STANDARD 11)
+# Comenta este bloque para ignorar este test
+add_executable(test_memoryleak_interactions test_memoryleak_interactions.cpp)
+target_link_libraries(test_memoryleak_interactions gtest_main MemoryLeakLib)
+add_test(NAME test_memoryleak_interactions COMMAND test_memoryleak_interactions)
 
-# Download and unpack googletest at configure time
-configure_file(CMakeLists.txt.in googletest-download/CMakeLists.txt)
-execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" .
-  RESULT_VARIABLE result
-  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/googletest-download )
-if(result)
-  message(FATAL_ERROR "CMake step for googletest failed: ${result}")
-endif()
-execute_process(COMMAND ${CMAKE_COMMAND} --build .
-  RESULT_VARIABLE result
-  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/googletest-download )
-if(result)
-  message(FATAL_ERROR "Build step for googletest failed: ${result}")
-endif()
+# Comenta este bloque para ignorar este test
+add_executable(test_memoryleak_interactions_integration test_memoryleak_interactions_integration.cpp)
+target_link_libraries(test_memoryleak_interactions_integration gtest_main MemoryLeakLib)
+add_test(NAME test_memoryleak_interactions_integration COMMAND test_memoryleak_interactions_integration)
 
-# Prevent overriding the parent project's compiler/linker
-# settings on Windows
-set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-
-# Add googletest directly to our build. This defines
-# the gtest and gtest_main targets.
-add_subdirectory(${CMAKE_CURRENT_BINARY_DIR}/googletest-src
-                 ${CMAKE_CURRENT_BINARY_DIR}/googletest-build
-                 EXCLUDE_FROM_ALL)
-
-# The gtest/gtest_main targets carry header search path
-# dependencies automatically when using CMake 2.8.11 or
-# later. Otherwise we have to add them here ourselves.
-if (CMAKE_VERSION VERSION_LESS 2.8.11)
-  include_directories("${gtest_SOURCE_DIR}/include")
-endif()
-
-
-add_library(MemoryLeakLib Member.hpp Member.cpp MemberProfileInfo.hpp MemberProfileInfo.cpp MemberLoginInfo.hpp MemberLoginInfo.cpp Application.hpp Application.cpp
-    Question.hpp Question.cpp Interaction.hpp Interaction.cpp Answer.hpp Answer.cpp Comment.hpp Comment.cpp)
-
-add_subdirectory(tests)
-
-add_executable(${PROJECT_NAME} "main.cpp")
-
-target_link_libraries(${PROJECT_NAME} MemoryLeakLib)
+# Comenta este bloque para ignorar este test
+add_executable(test_memoryleak_load_save_to_file test_memoryleak_load_save_to_file.cpp)
+target_link_libraries(test_memoryleak_load_save_to_file gtest_main MemoryLeakLib)
+add_test(NAME test_memoryleak_load_save_to_file COMMAND test_memoryleak_load_save_to_file)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/test_data.dat ${CMAKE_CURRENT_BINARY_DIR}/test_data.dat COPYONLY)

@@ -17,9 +17,9 @@ int main()
            | $$\  $ | $$| $$_____/| $$ | $$ | $$| $$  | $$| $$      | $$  | $$      | $$      | $$_____/ /$$__  $$| $$_  $$
            | $$ \/  | $$|  $$$$$$$| $$ | $$ | $$|  $$$$$$/| $$      |  $$$$$$$      | $$$$$$$$|  $$$$$$$|  $$$$$$$| $$ \  $$
            |__/     |__/ \_______/|__/ |__/ |__/ \______/ |__/       \____  $$      |________/ \_______/ \_______/|__/  \__/
-                                                                     /$$  | $$
-                                                                    |  $$$$$$/
-                                                                     \______/
+           /$$  | $$
+           |  $$$$$$/
+           \______/
 
            ------------------------------------------------------------------------------------------------------------------
 
@@ -106,29 +106,26 @@ int main()
         case signIn: //Sign in page
         {
             string user, password, email;
-            int exit;
             cout<<"Please enter your desired username:\n\n";
             cin>>user;
             cout<<"Please enter your email:\n\n";
             cin>>email;
-            cout<<"Please enter your desired password, it must contain at least a capital letter, a number and a special character:\n\n";
+            cout<<"Please enter your desired password, it must contain at least a capital letter, a number and a special character (!#$%&'()*+,-./):\n\n";
             cin>>password;
-            if(manager.createMember(user,"Empty field",email,password) == 1 && manager.checkPassword(password)==1){
-                cout<<"Congrats, your account has been successfully created!!\n";
-                cout<<"Please remember to complete your bio in settings once you log in\n\n";
-                ps=initial;
+            if(manager.checkPassword(password)==1){
+                if(manager.createMember(user,"Empty field",email,password) == 1){
+                    cout<<"Congrats, your ccount has been successfully created!!\n";
+                    cout<<"Please remember to complete your bio in settings once you log in\n\n";
+                    ps=initial;
+                }
             }
             else{
-                cout<<"Username already exist or password is incomplete! Please try again or enter -1 to exit\n\n";
-                cin>>exit;
-                if(exit==-1){
-                    ps=initial;
-                } else{
-                    ps=signIn;
-                }
+                cout<<"Username already exist or password is incomplete! Please try again\n\n";
+                ps=signIn;
             }
             break;
         }
+
 
         case showTag: // Show questions by tag
         {
@@ -468,7 +465,7 @@ int main()
                 cout<<"ID does not match any answer or question\n\n";
                 break;
             }
-          }
+            }
         }
 
         default:
