@@ -17,9 +17,9 @@ int main()
            | $$\  $ | $$| $$_____/| $$ | $$ | $$| $$  | $$| $$      | $$  | $$      | $$      | $$_____/ /$$__  $$| $$_  $$
            | $$ \/  | $$|  $$$$$$$| $$ | $$ | $$|  $$$$$$/| $$      |  $$$$$$$      | $$$$$$$$|  $$$$$$$|  $$$$$$$| $$ \  $$
            |__/     |__/ \_______/|__/ |__/ |__/ \______/ |__/       \____  $$      |________/ \_______/ \_______/|__/  \__/
-           /$$  | $$
-           |  $$$$$$/
-           \______/
+                                                                     /$$  | $$
+                                                                    |  $$$$$$/
+                                                                     \______/
 
            ------------------------------------------------------------------------------------------------------------------
 
@@ -29,7 +29,7 @@ int main()
 
     Application manager;
     manager.createMember("admin","admin","admin","admin");
-    manager.loadFromFile("dataFile.txt");
+    manager.loadFromFile("../dataFile.txt");
     int ps=0; //present state of machine
     int selectedQuestion;
 
@@ -82,6 +82,7 @@ int main()
         case logIn: //Log in
         {
             string email, password;
+            int exit;
             cout<<"Please enter your email:\n";
             cin>>email;
             cout<<"Please enter your password:\n";
@@ -91,8 +92,13 @@ int main()
                 ps=welcome;
             }
             else{
-                cout<<"Incorrect user or password!!\n\n";
-                ps=logIn;
+                cout<<"Incorrect user or password!!\n\n\t Enter -1 to exit.";
+                cin  >> exit;
+                if(exit == -1){
+                    ps=initial;
+                }else {
+                    ps=logIn;
+                }
             }
             break;
         }
@@ -100,20 +106,26 @@ int main()
         case signIn: //Sign in page
         {
             string user, password, email;
+            int exit;
             cout<<"Please enter your desired username:\n\n";
             cin>>user;
             cout<<"Please enter your email:\n\n";
             cin>>email;
             cout<<"Please enter your desired password, it must contain at least a capital letter, a number and a special character:\n\n";
             cin>>password;
-            if(manager.createMember(user,"Empty field",email,password) == 1 && manager.checkPassword(password)){
-                cout<<"Congrats, your ccount has been successfully created!!\n";
+            if(manager.createMember(user,"Empty field",email,password) == 1 && manager.checkPassword(password)==1){
+                cout<<"Congrats, your account has been successfully created!!\n";
                 cout<<"Please remember to complete your bio in settings once you log in\n\n";
                 ps=initial;
             }
             else{
-                cout<<"Username already exist or password is incomplete! Please try again\n\n";
-                ps=signIn;
+                cout<<"Username already exist or password is incomplete! Please try again or enter -1 to exit\n\n";
+                cin>>exit;
+                if(exit==-1){
+                    ps=initial;
+                } else{
+                    ps=signIn;
+                }
             }
             break;
         }
@@ -126,29 +138,34 @@ int main()
             cout << "please introduce the tag of the questions you want to see\n\n";
             cin >> tags;
             QuestionSorted = manager.getQuestionsByTag(tags);
-
-            cout<<"Question feed:\n";
-            cout<<" -- Type question id to interact with -- \n\n";
-            for (int  a = 0;  a < QuestionSorted.size(); a++) {
-                cout<<"\tID: "<<QuestionSorted[a]->getId();
-                cout<<"\tTitle: "<<QuestionSorted[a]->getTitle();
-            }
-            cout<<"\n\n";
-            cin>>id;
-
-            for (unsigned long  a = 0;  a < QuestionSorted.size(); a++) {
-                if(id==QuestionSorted[a]->getId()){
-                    index=a;
-                    a=QuestionSorted.size();
+            if (!QuestionSorted.empty()){
+                cout<<"Question feed:\n";
+                cout<<" -- Type question id to interact with -- \n\n";
+                for (int  a = 0;  a < QuestionSorted.size(); a++) {
+                    cout<<"\tID: "<<QuestionSorted[a]->getId();
+                    cout<<"\tTitle: "<<QuestionSorted[a]->getTitle();
                 }
-            }
+                cout<<"\n\n";
+                cin>>id;
 
-            if(index!=-1){
-                QuestionSorted[index]->show();
-            }
+                for (unsigned long  a = 0;  a < QuestionSorted.size(); a++) {
+                    if(id==QuestionSorted[a]->getId()){
+                        index=a;
+                        a=QuestionSorted.size();
+                    }
+                }
 
-            else{
-                cout<<"ID does not match\n\n";
+                if(index!=-1){
+                    QuestionSorted[index]->show();
+                }
+
+                else{
+                    cout<<"ID does not match\n\n";
+                }
+
+            } else {
+                cout << "Sorry, we have no question with that tag at the moment, but you might create one yourself!\n\n";
+                ps = initial;
             }
 
             break;
@@ -194,35 +211,40 @@ int main()
         case feed: //Feed page
         {
             int id,option,index=-1;
-
-            cout<<"Question feed:\n";
-            vector <Question*> printQ = manager.getQuestions();
-            for (unsigned long  a = 0;  a < printQ.size(); a++) {
-                cout<<"\tID: "<<printQ[a]->getId();
-                cout<<"\tTitle: "<<printQ[a]->getTitle();
-            }
-            cout<<"\n\n";
-            if(manager.isLogged()==true){
-                cout<<" -- Type question id to interact with -- \n\n";
-                cin>>id;
+            if(!manager.getQuestions().empty()){
+                cout<<"Question feed:\n";
+                vector <Question*> printQ = manager.getQuestions();
                 for (unsigned long  a = 0;  a < printQ.size(); a++) {
-                    if(id==printQ[a]->getId()){
-                        selectedQuestion=a;
-                        a=printQ.size();
-                        ps=feed;
-                    }
-                    else{
-                        cout<<"ID does not match\n\n";
+                    cout<<"\tID: "<<printQ[a]->getId();
+                    cout<<"\tTitle: "<<printQ[a]->getTitle();
+                }
+                cout<<"\n\n";
+                if(manager.isLogged()==true){
+                    cout<<" -- Type question id to interact with -- \n\n";
+                    cin>>id;
+                    for (unsigned long  a = 0;  a < printQ.size(); a++) {
+                        if(id==printQ[a]->getId()){
+                            selectedQuestion=a;
+                            a=printQ.size();
+                            ps=feed;
+                        }
+                        else{
+                            cout<<"ID does not match\n\n";
+                        }
                     }
                 }
-            }
-            cout<<"Type -1 to return";
-            cin>>option;
-            if(option=-1){
+                cout<<"Type -1 to return";
+                cin>>option;
+                if(option=-1){
+                    ps=initial;
+                    break;
+                }
+                break;
+            } else {
+                cout << "We have no questions at the moment!Please be the first one to create one\n\n";
                 ps=initial;
                 break;
             }
-            break;
         }
 
         case addQuestion:  //Add question page
@@ -299,7 +321,7 @@ int main()
         case logOut:    //Logout
         {
             manager.logout();
-            manager.saveToFile("dataFile.txt");
+            manager.saveToFile("../dataFile.txt");
             ps=initial;
             break;
         }
@@ -312,7 +334,7 @@ int main()
             switch (option) {
             case 1:
             {
-                if( manager.saveToFile("CopiadeSeguridad1.txt")){
+                if( manager.saveToFile("../CopiadeSeguridad1.txt")){
                     cout << "Security copy successfully made\n";
                 } else {
                     cout << "File cannot be created\n";
