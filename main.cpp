@@ -55,6 +55,10 @@ int main()
         {
 
         case initial: //Initial page
+            // Logout if needed (lo acabo de anyadir)
+            if (manager.getCurrentMember() != NULL) {
+                manager.logout();
+            }
             cout<<"Press the following for:\n\n";
             cout<<"\t 1)Log in\n\t 2)Sign up\n\t 3)Search questions by tag\n\t 4)See all questions\n";
             cin>>ps;
@@ -82,7 +86,7 @@ int main()
         case logIn: //Log in
         {
             string email, password;
-            int exit;
+            string exit;
             cout<<"Please enter your email:\n";
             cin>>email;
             cout<<"Please enter your password:\n";
@@ -92,12 +96,13 @@ int main()
                 ps=welcome;
             }
             else{
-                cout<<"Incorrect user or password!!\n\n\t Enter -1 to exit.";
+                cout<<"Incorrect user or password!!\n\n\t Try again? [y/n]:  ";
                 cin  >> exit;
-                if(exit == -1){
-                    ps=initial;
-                }else {
+                cout << endl;
+                if(exit.length() == 1 && std::tolower(exit[0]) == 'y'){
                     ps=logIn;
+                }else {
+                    ps=initial;
                 }
             }
             break;
@@ -207,7 +212,7 @@ int main()
 
         case feed: //Feed page
         {
-            int id,option,index=-1;
+            int id,index=-1;
             if(!manager.getQuestions().empty()){
                 cout<<"Question feed:\n";
                 vector <Question*> printQ = manager.getQuestions();
@@ -219,29 +224,40 @@ int main()
                 if(manager.isLogged()==true){
                     cout<<" -- Type question id to interact with -- \n\n";
                     cin>>id;
+                    bool q_found = false;
                     for (unsigned long  a = 0;  a < printQ.size(); a++) {
                         if(id==printQ[a]->getId()){
                             selectedQuestion=a;
-                            a=printQ.size();
-                            ps=feed;
-                        }
-                        else{
-                            cout<<"ID does not match\n\n";
+                            q_found = true;
+                            break;
                         }
                     }
+                    if (q_found) {
+                        ps=feedID;
+                        break;
+                    } else {
+                        cout<<"ID does not match\n\n";
+                    }
+                    string option;
+                    cout<<"\t Try again? [y/n]:  ";
+                    cin>>option;
+                    cout << endl;
+                    if(option.length() == 1 && std::tolower(option[0]) == 'y'){
+                        ps=feed;
+                        break;
+                    } else {
+                        ps=welcome;
+                        break;
+                    }
                 }
-                cout<<"Type -1 to return";
-                cin>>option;
-                if(option=-1){
-                    ps=initial;
-                    break;
-                }
-                break;
-            } else {
-                cout << "We have no questions at the moment!Please be the first one to create one\n\n";
                 ps=initial;
                 break;
+            } else {
+                cout << "We have no questions at the moment! Please be the first one to create one\n\n";
+                ps=welcome;
+                break;
             }
+            break;
         }
 
         case addQuestion:  //Add question page
@@ -312,7 +328,7 @@ int main()
 
         case myQuestions: //My questions page, we didn have time to implement this page
         {
-
+            break;
         }
 
         case logOut:    //Logout
@@ -336,18 +352,20 @@ int main()
                 } else {
                     cout << "File cannot be created\n";
                 }
-                ps=4;
+                ps=welcome;
                 break;
             }
             case 2:{
                 string filename;
-                cout << "Please enter the name of the file you want to restore. Please,be aware you will be logged out\n";
+                cout << "Please enter the name of the file you want to restore. Please, be aware you will be logged out\n";
+                cin >> filename;
                 manager.logout();
                 if(!manager.loadFromFile(filename)){
-                    cout << "copy cannot be restored";
+                    cout << "copy cannot be restored" << endl;
                     ps = welcome;
                 }
                 else{
+                    cout << "copy restored successfully" << endl;
                     ps = initial;
                 }
 
@@ -361,13 +379,14 @@ int main()
             default:
                 break;
             }
+            break;
         }
 
         case feedID:
         {
             int option;
             vector <Question*> printQ = manager.getQuestions();
-            printQ[selectedQuestion]->show();
+            cout << printQ[selectedQuestion]->show();
             cout<<"Press the following for:\n\n";
             cout<<"\t 1)Upvote Question|Answer\n\t 2)Downvote Question|Answer\n\t 3)Comment Question|Answer\n";
             if(manager.getCurrentMember()->getUsername()==printQ[selectedQuestion]->getAuthor()->getUsername()){
@@ -379,7 +398,7 @@ int main()
             case 1:
             {
                 int id;
-                cout<<"Enter Question|Answer ID";
+                cout<<"Enter Question|Answer ID: ";
                 cin>>id;
                 vector <Interaction*> interactions = printQ[selectedQuestion]->getInteractions();
                 if (printQ[selectedQuestion]->getId() == id){
@@ -401,7 +420,7 @@ int main()
             case 2:
             {
                 int id;
-                cout<<"Enter Question|Answer ID";
+                cout<<"Enter Question|Answer ID: ";
                 cin>>id;
                 vector <Interaction*> interactions = printQ[selectedQuestion]->getInteractions();
                 if (printQ[selectedQuestion]->getId() == id){
@@ -466,11 +485,13 @@ int main()
                 break;
             }
             }
+            break;
         }
 
         default:
             cout << "Error 404, redirecting to home page\n\n";
-            ps=initial;
+            ps=logOut;
+            break;
         }
     }
     return 0;
